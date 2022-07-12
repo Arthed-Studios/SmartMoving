@@ -1,5 +1,5 @@
 # [ SmartMoving ]
-[ Minecraft Plugin ] 1.14 ~ 1.19 All in one moving plugin (Crawling + Walljump + etc)
+[ Minecraft Plugin ] 1.14.X ~ 1.19.X All in one moving plugin (Crawling + Walljump + etc)
 
 ## Development Status
 https://github.com/IPECTER/SmartMoving/projects/1
