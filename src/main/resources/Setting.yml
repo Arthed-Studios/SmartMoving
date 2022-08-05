@@ -1,0 +1,11 @@
+#Control Whether Enable This Plugin Functions
+#이 플러그인의 기능을 활성화할 것인지 조정합니다
+enablePlugin: true
+
+#Control Whether Send Motd to All User, False = Only OP
+#Motd를 모든 유저에게 보낼지 조정합니다, False = OP에게만 보냅니다
+motd: true
+
+#Message Locale, You can make new Locale File, Locale_KR.yml = KR
+#메세지 언어, 새로운 언어 파일을 만들 수 있습니다, Locale_KR.yml = KR
+locale: "EN"
