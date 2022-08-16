@@ -1,7 +1,9 @@
 name: SmartMoving
 version: '${version}'
 main: com.github.ipecter.rtu.smartmoving.SmartMoving
-api-version: 1.13
+api-version: 1.14
 softdepend: [ PlaceholderAPI ]
 authors: [ IPECTER ]
 description: SmartMoving Plugin
+commands:
+  smartmoving:

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group = 'com.github.ipecter'
@@ -10,21 +11,30 @@ ConfigurableFileTree libsImplementation = fileTree(dir: 'libs-implementation', i
 repositories {
     mavenCentral()
     maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'worldguard'
+        url = 'https://maven.enginehub.org/repo/'
+    }
+    maven {
+        url = uri("https://papermc.io/repo/repository/maven-public/")
     }
 }
 
 dependencies {
     implementation libsImplementation
-    compileOnly 'org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5-SNAPSHOT'
+    compileOnly 'io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT'
+    compileOnly "net.kyori:adventure-platform-bukkit:4.1.0"
+    compileOnly "net.kyori:adventure-text-minimessage:4.11.0"
+    implementation project(':NMS')
+    implementation project(':VersionIndependentNMS')
+    implementation project(':LegacyIndependentNMS')
 }
 
-def targetJavaVersion = 11
+def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -33,7 +43,9 @@ java {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
 }
-
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion

@@ -9,3 +9,31 @@ motd: true
 #Message Locale, You can make new Locale File, Locale_KR.yml = KR
 #메세지 언어, 새로운 언어 파일을 만들 수 있습니다, Locale_KR.yml = KR
 locale: "EN"
+
+crawling:
+
+  #HOLD - players will continue crawling as long as they keep shift pressed
+  #HOLD - Shift 키를 오랫동안 누르고 있으면 엎드립니다
+  #TOGGLE - players will start crawling and get up when they press shift
+  #TOGGLE - Shift 키를 클릭하면 엎드리고 일어섭니다
+  #TUNNELS - players can enter one block tunnels by sneaking in front of them
+  #TUNNELS - 앞에 한 칸 크기의 공간이 있을시 자동으로 엎드립니다
+  mods:
+    - HOLD
+    - TOGGLE
+    - TUNNELS
+
+  #DOUBLE_SHIFT - double shift while looking down
+  #DOUBLE_SHIFT - 최대한 아래를 본 상태로 Shift를 더블 클릭하면 작동합니다
+  #HOLD_X - hold shift for X seconds while looking down. Examples: 'HOLD_1', 'HOLD_0.5'
+  #HOLD_X - 최대한 아래를 본 상태로 Shift 키를 X 초 동안 홀드하고 있으면 작동합니다. 예: 'HOLD_1', 'HOLD_0.5'
+  keys:
+    - DOUBLE_SHIFT
+
+  blackList:
+
+    world:
+      - disableWorld
+
+    block:
+      - MAGMA_BLOCK
