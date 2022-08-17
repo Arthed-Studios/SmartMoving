@@ -11,16 +11,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class Utils {
-
+    private static final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
     private static final WorldGuardImplementation worldGuard = SmartMovingManager.getInstance().getWorldGuard();
     private static final ConfigManager configManager = ConfigManager.getInstance();
     public static BlockData BARRIER_BLOCK_DATA = Bukkit.createBlockData(Material.BARRIER);
 
     public static void revertBlockPacket(Player player, final Block block) {
         player.sendBlockChange(block.getLocation(), block.getBlockData());
-        Bukkit.getScheduler().runTask(SmartMoving.plugin, () -> block.getState().update());
+        Bukkit.getScheduler().runTask(plugin, () -> block.getState().update());
     }
 
     public static boolean canCrawl(Player player) {
@@ -41,28 +42,28 @@ public class Utils {
     }
 
     public static boolean isFullBlock(Player player) {
-        return isFullBlockAbove(player) && isFullBlockEyeLoc(player) && isFullBlockLegLoc(player);
+        return checkAboveLoc(player) && checkLegLoc(player);
     }
 
-    public static boolean isFullBlockAbove(Player player) {
+    public static boolean checkAboveLoc(Player player) {
         Block block = player.getLocation().add(0, 1.5, 0).getBlock();
-        return isFullBlock(block);
+        return checkAboveLoc(block);
     }
 
-    public static boolean isFullBlockEyeLoc(Player player) {
-        Block block = player.getEyeLocation().getBlock();
-        return isFullBlock(block);
-    }
-
-    public static boolean isFullBlockLegLoc(Player player) {
+    public static boolean checkLegLoc(Player player) {
         Block block = player.getLocation().getBlock();
-        return isFullBlock(block);
+        return checkLegLoc(block);
     }
 
-    public static boolean isFullBlock(Block block) {
-        if (block.getType().isSolid()) return false;
-        if (block.getType().isCollidable()) return false;
-        if (block.getType().isAir()) return false;
+    public static boolean checkAboveLoc(Block block) {
+        if (block.getType().isAir()) return true;
+        if (block.isSolid()) return false;
+        if (block.isPassable()) return false;
+        return true;
+    }
+
+    public static boolean checkLegLoc(Block block) {
+        if (block.isCollidable()) return false;
         return true;
     }
 

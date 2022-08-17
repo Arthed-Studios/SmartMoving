@@ -42,7 +42,6 @@ public class VersionIndependentNmsPackets implements NmsPackets {
     private final int blockId = -8854;
     private final int floorBlockId = -8855;
     private final DataWatcher dataWatcher;
-
     public VersionIndependentNmsPackets(World world) {
         FallingBlock fallingBlock = (FallingBlock) world.spawnEntity(new Location(world, 0, 0, 0), EntityType.FALLING_BLOCK);
         fallingBlock.setGravity(false);

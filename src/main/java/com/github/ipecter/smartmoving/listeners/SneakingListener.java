@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -24,13 +25,14 @@ public class SneakingListener implements Listener {
 
     private final Set<Player> doubleSneakingCheck = new HashSet<>();
     private final Map<Player, BukkitTask> holdCheck = new HashMap<>();
+    private final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
 
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent event) {
         if (!Utils.canCrawl(event.getPlayer())) {
             return; //Because canCrawl is not work in CrPlayer Class.
         }
-        Bukkit.getScheduler().runTaskAsynchronously(SmartMoving.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             Player player = event.getPlayer();
             SMPlayer smPlayer = smartMovingManager.getPlayerCrawling(player);
 
@@ -38,13 +40,13 @@ public class SneakingListener implements Listener {
 
                 // Stop Crawling
                 if (smPlayer != null && smPlayer.toggleMode() != null && smPlayer.toggleMode() && config.getCrawlingModes().contains("TOGGLE")) {
-                    Bukkit.getScheduler().runTask(SmartMoving.plugin, smPlayer::stopCrawling);
+                    Bukkit.getScheduler().runTask(plugin, smPlayer::stopCrawling);
                     return;
                 }
 
                 // Start crawling when sneaking while in a tunnel if HOLD mode is enabled
                 if (smPlayer == null && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
-                    Bukkit.getScheduler().runTask(SmartMoving.plugin, () -> smartMovingManager.startCrawling(player));
+                    Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                     return;
                 }
 
@@ -52,11 +54,11 @@ public class SneakingListener implements Listener {
                 if (config.getCrawlingModes().contains("TUNNELS")) {
                     if (Utils.isInFrontOfATunnel(player)) {
 
-                        Bukkit.getScheduler().runTask(SmartMoving.plugin, () -> smartMovingManager.startCrawling(player));
+                        Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
 
                         Utils.WallFace facing = Utils.WallFace.fromBlockFace(player.getFacing());
 
-                        Bukkit.getScheduler().runTaskLater(SmartMoving.plugin, () -> {
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
                             SMPlayer smPlayer1 = smartMovingManager.getPlayerCrawling(player);
                             if (smPlayer1 != null) {
                                 smPlayer1.stopCrawling();
@@ -71,10 +73,10 @@ public class SneakingListener implements Listener {
                     if (config.getCrawlingKeys().contains("DOUBLE_SHIFT") || config.getCrawlingKeys().contains("DOWN_DOUBLE_SHIFT")) { //if double sneaking is enabled
                         if (!doubleSneakingCheck.contains(player)) {
                             doubleSneakingCheck.add(player);
-                            Bukkit.getScheduler().runTaskLaterAsynchronously(SmartMoving.plugin, () -> doubleSneakingCheck.remove(player), 8);
+                            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> doubleSneakingCheck.remove(player), 8);
                         } else {
                             doubleSneakingCheck.remove(player);
-                            Bukkit.getScheduler().runTask(SmartMoving.plugin, () -> smartMovingManager.startCrawling(player));
+                            Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                         }
                         return;
                     }
@@ -84,7 +86,7 @@ public class SneakingListener implements Listener {
                         if (start_crawling.contains("HOLD")) {
                             this.holdCheck.remove(player);
                             int time = Integer.parseInt(start_crawling.split("_")[1]);
-                            this.holdCheck.put(player, Bukkit.getScheduler().runTaskLater(SmartMoving.plugin, () -> {
+                            this.holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
                                 if (player.isSneaking() && player.getLocation().getPitch() > 87) {
                                     smartMovingManager.startCrawling(player);
                                     this.holdCheck.remove(player);
@@ -99,7 +101,7 @@ public class SneakingListener implements Listener {
 
                 // Stop Crawling
                 if (smPlayer != null && smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD")) {
-                    Bukkit.getScheduler().runTask(SmartMoving.plugin, smPlayer::stopCrawling);
+                    Bukkit.getScheduler().runTask(plugin, smPlayer::stopCrawling);
                 }
             }
         });

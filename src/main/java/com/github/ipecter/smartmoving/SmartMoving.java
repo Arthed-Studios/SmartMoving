@@ -4,6 +4,7 @@ import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
 import com.github.ipecter.smartmoving.commands.Command;
 import com.github.ipecter.smartmoving.impl.WorldGuardImplementation;
 import com.github.ipecter.smartmoving.listeners.*;
+import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.nms.LegacyIndependentNmsPackets;
 import com.github.ipecter.smartmoving.nms.VersionIndependentNmsPackets;
 import com.github.ipecter.smartmoving.utils.Version;
@@ -16,8 +17,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SmartMoving extends JavaPlugin {
-
-    public final static Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
 
     private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
 
@@ -38,26 +37,35 @@ public final class SmartMoving extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //Checking if version is lower than 1.14
-        if (bukkitVersion.compareTo(minSupportedVersion) < 0) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cSorry, This plugin works only on 1.14 or higher versions."));
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
+        try {
+            //Checking if version is lower than 1.14
+            if (bukkitVersion.compareTo(minSupportedVersion) < 0) {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cSorry, This plugin works only on 1.14 or higher versions."));
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+
+            loadNMS();
+            RTUUtilAPI.init(this);
+            registerEvent();
+            setExecutor();
+            ConfigManager.getInstance().initConfigFiles();
+            Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&aEnable&f!"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        loadNMS();
-
-        registerEvent();
-        setExecutor();
-        loadDependencies();
-
-        Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&aEnable&f!"));
     }
 
     @Override
     public void onDisable() {
         clearBlock();
         Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&cDisable&f!"));
+    }
+
+    @Override
+    public void onLoad() {
+        loadDependencies();
     }
 
     private void clearBlock() {

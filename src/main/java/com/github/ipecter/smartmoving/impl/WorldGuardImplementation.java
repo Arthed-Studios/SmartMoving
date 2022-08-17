@@ -84,7 +84,7 @@ public class WorldGuardImplementation {
                 StateFlag flag = new StateFlag("crawling", true);
                 registry.register(flag);
                 ALLOW_CRAWLING = flag;
-            } catch (FlagConflictException e) {
+            } catch (IllegalStateException | FlagConflictException e) {
                 Flag<?> existing = registry.get("crawling");
                 if (existing instanceof StateFlag) {
                     ALLOW_CRAWLING = (StateFlag) existing;
