@@ -82,10 +82,10 @@ public final class SmartMoving extends JavaPlugin {
 
     private void registerEvent() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
-        Bukkit.getPluginManager().registerEvents(new SneakingListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
-        Bukkit.getPluginManager().registerEvents(new SwimmingToggleListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJump(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerToggleSneak(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerToggleSwim(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
 
     }
 

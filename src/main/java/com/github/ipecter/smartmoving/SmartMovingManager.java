@@ -5,10 +5,14 @@ import com.github.ipecter.smartmoving.impl.WorldGuardImplementation;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SmartMovingManager {
-    protected final HashMap<Player, SMPlayer> players = new HashMap<>();
+
+    protected final Map<Player, SMPlayer> players = Collections.synchronizedMap(new HashMap<>());
+
     protected NmsPackets nmsPacketManager;
     protected WorldGuardImplementation worldGuard;
     private Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
@@ -24,12 +28,6 @@ public class SmartMovingManager {
         return plugin;
     }
 
-    public void addPlayer(Player player) {
-        if (!players.containsKey(player)) {
-            players.put(player, new SMPlayer(player));
-        }
-    }
-
     public void removePlayer(Player player) {
         players.remove(player);
     }
@@ -43,17 +41,20 @@ public class SmartMovingManager {
     }
 
     public void startCrawling(Player player) {
-        if (!this.players.containsKey(player)) {
-            this.players.put(player, new SMPlayer(player));
+        if (!players.containsKey(player)) {
+            players.put(player, new SMPlayer(player));
         }
     }
 
     public void stopCrawling(Player player) {
-        this.players.remove(player);
+        System.out.println("E");
+        getPlayerCrawling(player).stopCrawling();
+        players.remove(player);
     }
 
     public boolean isCrawling(Player player) {
-        return player.isSwimming() && this.players.containsKey(player);
+        System.out.println("D: " + players.containsKey(player));
+        return players.containsKey(player);
     }
 
     public SMPlayer getPlayerCrawling(Player player) {

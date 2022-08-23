@@ -25,7 +25,9 @@ public class Utils {
     }
 
     public static boolean canCrawl(Player player) {
-        if (!player.hasPermission("smartmoving.crawling.use")) return false;
+        if (!player.hasPermission("smartmoving.crawling.use")) {
+            return false;
+        }
         if (worldGuard != null)
             if (!worldGuard.canCrawl(player))
                 return false;
@@ -34,36 +36,70 @@ public class Utils {
         if (isOnBlacklistedBlock) return false;
         boolean isInBlacklistedWorld = configManager.getCrawlingWorldBlackList().contains(player.getWorld());
         if (isInBlacklistedWorld) return false;
-        return isOnGround(player) && isFullBlock(player);
+        return check(player);
+    }
+
+    public static boolean canCrawlCancel(Player player) {
+        if (!player.hasPermission("smartmoving.crawling.use")) {
+            return false;
+        }
+        if (worldGuard != null)
+            if (!worldGuard.canCrawl(player))
+                return false;
+        Block playerBelowBlock = player.getLocation().clone().subtract(0, 0.4, 0).getBlock();
+        boolean isOnBlacklistedBlock = configManager.getCrawlingBlockBlackList().contains(playerBelowBlock.getType().name().toUpperCase());
+        if (isOnBlacklistedBlock) return false;
+        boolean isInBlacklistedWorld = configManager.getCrawlingWorldBlackList().contains(player.getWorld());
+        if (isInBlacklistedWorld) return false;
+        if (isOnGround(player)) return true;
+        return check(player);
+    }
+
+    public static boolean check(Player player) {
+        boolean value1 = false;
+        boolean value2 = false;
+        if (isOnGround(player)) {
+            value1 = true;
+        }
+        if (checkBlock(player)) {
+            value2 = true;
+        }
+        return value1 && value2;
     }
 
     public static boolean isOnGround(Player player) {
         return !player.isFlying() && player.isOnGround() && !player.isInsideVehicle();
     }
 
-    public static boolean isFullBlock(Player player) {
-        return checkAboveLoc(player) && checkLegLoc(player);
+    public static boolean checkBlock(Player player) {
+        return checkAbove(player) && checkLeg(player);
     }
 
-    public static boolean checkAboveLoc(Player player) {
+    public static boolean checkAbove(Player player) {
         Block block = player.getLocation().add(0, 1.5, 0).getBlock();
-        return checkAboveLoc(block);
+        System.out.println("ABC: " + player.getLocation().getBlock().getLocation().getBlockY() + " / " + block.getLocation().getBlockY());
+        if (player.getLocation().toBlockLocation().equals(player.getEyeLocation().toBlockLocation())) return true;
+        return checkAbove(block);
     }
 
-    public static boolean checkLegLoc(Player player) {
+    public static boolean checkLeg(Player player) {
         Block block = player.getLocation().getBlock();
-        return checkLegLoc(block);
+        return checkLeg(block);
     }
 
-    public static boolean checkAboveLoc(Block block) {
+    public static boolean checkAbove(Block block) {
         if (block.getType().isAir()) return true;
         if (block.isSolid()) return false;
-        if (block.isPassable()) return false;
+        if (block.isLiquid()) return false;
         return true;
     }
 
-    public static boolean checkLegLoc(Block block) {
+    public static boolean checkLeg(Block block) {
+        if (block.getType().isAir()) return true;
+        if (block.isSolid()) return true;
+        if (block.isPassable()) return true;
         if (block.isCollidable()) return false;
+        if (block.isLiquid()) return false;
         return true;
     }
 

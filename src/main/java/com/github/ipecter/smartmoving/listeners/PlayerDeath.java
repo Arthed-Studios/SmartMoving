@@ -5,15 +5,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class PlayerDeathListener implements Listener {
+public class PlayerDeath implements Listener {
 
 
     private final SmartMovingManager smartMovingManager = SmartMovingManager.getInstance();
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        if (smartMovingManager.isCrawling(event.getEntity()))
-            smartMovingManager.stopCrawling(event.getEntity());
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        if (smartMovingManager.isCrawling(e.getEntity()))
+            System.out.println("F2");
+        smartMovingManager.stopCrawling(e.getEntity());
     }
 
 }

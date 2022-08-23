@@ -20,6 +20,7 @@ public class SMPlayer {
 
     private BukkitTask moveTask; // task running every 3 ticks making sure the barrier is above the player
     private BukkitTask canCrawlTask; // task running every 20 ticks checking if the player can continue crawling
+    private int nonGround = 0;
 
     private Boolean toggleMode;
 
@@ -29,37 +30,56 @@ public class SMPlayer {
     }
 
     public void startCrawling() {
-        System.out.println("C1");
         if (!Utils.canCrawl(this.player)) {
             this.stopCrawling();
             return;
         }
-        System.out.println("C2");
-        this.barrierBlock = player.getLocation().getBlock();
-
-        this.player.setSwimming(true);
+        barrierBlock = player.getLocation().getBlock();
+        player.setSwimming(true);
 
         moveTask = Bukkit.getScheduler().runTaskTimer(manager.getPlugin(), () -> {
-
+            player.setSwimming(true);
             Block blockAbovePlayer = this.player.getLocation().add(0, 1.5, 0).getBlock();
             if (!this.barrierBlock.equals(blockAbovePlayer)) {
                 this.replaceBarrier(blockAbovePlayer);
+                barrierBlock = blockAbovePlayer;
+            } else {
+                barrierBlock = blockAbovePlayer;
+                if (Utils.checkAbove(blockAbovePlayer)) {
+                    player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
+                }
             }
-            System.out.println("CC");
-
-        }, 0, 1); // runs every tick
+        }, 0, 1);
 
         canCrawlTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
-            if (!Utils.canCrawl(this.player)) {
-                System.out.println("CC");
+            if (!player.isOnGround()) {
+                if (nonGround >= 8) {
+                    Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
+                    nonGround = 0;
+                    System.out.println("A2");
+                } else {
+                    nonGround++;
+                    System.out.println("A1: " + nonGround);
+                }
+                return;
+            } else if (player.isOnGround()) {
+                nonGround = 0;
+                System.out.println("A3");
+                return;
+            }
+            if (!Utils.canCrawlCancel(this.player)) {
+                System.out.println("B1");
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
-            } else if (this.player.getVelocity().getY() > 0 && this.player.getNoDamageTicks() == 0)
+                return;
+            } else if (this.player.getVelocity().getY() > 0 && this.player.getNoDamageTicks() == 0) {
+                System.out.println("B2");
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
-        }, 20, 20); // runs every 20 ticks
+                return;
+            }
+        }, 5, 1);
 
 
         // Check if toggle mode should be used
-
         boolean hold = config.getCrawlingModes().contains("HOLD");
         boolean toggle = config.getCrawlingModes().contains("TOGGLE");
         if (hold && toggle) {
@@ -70,59 +90,35 @@ public class SMPlayer {
     }
 
     public void replaceBarrier(Block blockAbovePlayer) {
-        System.out.println("A1");
-        System.out.println("A2: " + manager.isCrawling(player));
         Utils.revertBlockPacket(player, barrierBlock);
-        Utils.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
-        nmsPacketManager.removeFakeBlocks(player);
-        this.barrierBlock = blockAbovePlayer;
-        if (Utils.checkAboveLoc(blockAbovePlayer)) {
-            System.out.println("A3");
+        barrierBlock = blockAbovePlayer;
+        if (Utils.checkAbove(blockAbovePlayer)) {
             player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
         }
     }
 
-    public void replaceBarrier(Block blockAbovePlayer, boolean checkBlock) {
-        System.out.println("A1");
-        System.out.println("A2: " + manager.isCrawling(player));
-        if (checkBlock) {
-            Utils.revertBlockPacket(player, barrierBlock);
-            Utils.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
-            this.barrierBlock = blockAbovePlayer;
-            nmsPacketManager.removeFakeBlocks(player);
-            if (Utils.checkAboveLoc(blockAbovePlayer)) {
-                System.out.println("A3: " + checkBlock);
-                player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
-            }
-        } else {
-            System.out.println("A3: " + checkBlock);
-            player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
-
-        }
-    }
 
     public void stopCrawling() {
-        System.out.println("D1");
-        this.player.setSwimming(false);
+        player.setSwimming(false);
 
-        if (this.barrierBlock != null) {
-            Utils.revertBlockPacket(this.player, this.barrierBlock);
-            Utils.revertBlockPacket(this.player, this.barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
-            nmsPacketManager.removeFakeBlocks(this.player);
+        if (barrierBlock != null) {
+            Utils.revertBlockPacket(player, barrierBlock);
+            Utils.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
+            nmsPacketManager.removeFakeBlocks(player);
         }
 
-        if (this.moveTask != null) {
-            this.moveTask.cancel();
+        if (moveTask != null) {
+            moveTask.cancel();
         }
-        if (this.canCrawlTask != null) {
-            this.canCrawlTask.cancel();
+
+        if (canCrawlTask != null) {
+            canCrawlTask.cancel();
         }
-        System.out.println("D2");
-        SmartMovingManager.getInstance().removePlayer(this.player);
+        SmartMovingManager.getInstance().removePlayer(player);
     }
 
     public Boolean toggleMode() {
-        return this.toggleMode;
+        return toggleMode;
     }
 
 }
