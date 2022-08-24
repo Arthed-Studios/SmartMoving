@@ -56,23 +56,18 @@ public class SMPlayer {
                 if (nonGround >= 8) {
                     Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
                     nonGround = 0;
-                    System.out.println("A2");
                 } else {
                     nonGround++;
-                    System.out.println("A1: " + nonGround);
                 }
                 return;
             } else if (player.isOnGround()) {
                 nonGround = 0;
-                System.out.println("A3");
                 return;
             }
             if (!Utils.canCrawlCancel(this.player)) {
-                System.out.println("B1");
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
                 return;
             } else if (this.player.getVelocity().getY() > 0 && this.player.getNoDamageTicks() == 0) {
-                System.out.println("B2");
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
                 return;
             }

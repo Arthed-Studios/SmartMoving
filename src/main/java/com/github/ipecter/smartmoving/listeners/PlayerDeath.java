@@ -13,7 +13,6 @@ public class PlayerDeath implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (smartMovingManager.isCrawling(e.getEntity()))
-            System.out.println("F2");
         smartMovingManager.stopCrawling(e.getEntity());
     }
 

@@ -14,7 +14,7 @@ public class ConfigManager {
     private boolean enablePlugin = true;
     private boolean motd = true;
     private String locale = "EN";
-    private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ RTUCommandControl ]</GRADIENT:a3a3a3> ");
+    private String prefix = IridiumColorAPI.process("<GRADIENT:4aa832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private String reloadMsg = "";
     private String commandWrongUsage = "";
     private String noPermission = "";

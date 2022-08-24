@@ -13,9 +13,8 @@ public class PlayerJump implements Listener {
     @EventHandler
     public void onJump(PlayerJumpEvent e) {
         Player player = e.getPlayer();
-        System.out.println("C1: " + smartMovingManager.isCrawling(player));
         if (smartMovingManager.isCrawling(player)) {
-            System.out.println("F3");
+            System.out.println("Stop Crawling - Jump ");
             smartMovingManager.stopCrawling(player);
         }
     }

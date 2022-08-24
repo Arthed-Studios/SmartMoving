@@ -36,7 +36,7 @@ public class PlayerToggleSneak implements Listener {
         }
         if (e.isSneaking()) {
             if (smartMovingManager.isCrawling(player)) {
-                System.out.println("F1");
+                System.out.println("Stop Crawling - Sneak");
                 smartMovingManager.stopCrawling(player);
                 return;
             }
@@ -49,14 +49,11 @@ public class PlayerToggleSneak implements Listener {
                 Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                 return;
             }
-
+            System.out.println("Keys: " + config.getCrawlingKeys());
+            System.out.println("Keys: " + config.getCrawlingModes());
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (Utils.isInFrontOfATunnel(player)) {
-
                     Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
-
-                    Utils.WallFace facing = Utils.WallFace.fromBlockFace(player.getFacing());
-
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         SMPlayer smPlayer1 = smartMovingManager.getPlayerCrawling(player);
                         if (smPlayer1 != null) {
@@ -68,7 +65,7 @@ public class PlayerToggleSneak implements Listener {
             }
 
             if (player.getLocation().getPitch() > 87) { // The player is looking downwards and is not crawling
-                if (config.getCrawlingKeys().contains("DOUBLE_SHIFT") || config.getCrawlingKeys().contains("DOWN_DOUBLE_SHIFT")) { //if double sneaking is enabled
+                if (config.getCrawlingKeys().contains("DOUBLE_SHIFT")) { //if double sneaking is enabled
                     if (!doubleSneakingCheck.contains(player)) {
                         doubleSneakingCheck.add(player);
                         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> doubleSneakingCheck.remove(player), 8);
