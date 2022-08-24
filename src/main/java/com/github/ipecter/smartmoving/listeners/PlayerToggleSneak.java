@@ -50,7 +50,7 @@ public class PlayerToggleSneak implements Listener {
                 return;
             }
             System.out.println("Keys: " + config.getCrawlingKeys());
-            System.out.println("Keys: " + config.getCrawlingModes());
+            System.out.println("Modes: " + config.getCrawlingModes());
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (Utils.isInFrontOfATunnel(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));

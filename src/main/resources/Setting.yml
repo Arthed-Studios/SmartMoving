@@ -18,7 +18,7 @@ crawling:
   #TOGGLE - Shift 키를 클릭하면 엎드리고 일어섭니다
   #TUNNELS - players can enter one block tunnels by sneaking in front of them
   #TUNNELS - 앞에 한 칸 크기의 공간이 있을시 자동으로 엎드립니다
-  mods:
+  modes:
     - HOLD
     - TOGGLE
     - TUNNELS
