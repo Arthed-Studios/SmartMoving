@@ -145,6 +145,10 @@ public class ConfigManager {
     }
 
     private void initCrawling(YamlConfiguration config) {
+        crawlingModes.clear();
+        crawlingKeys.clear();
+        crawlingWorldBlackList.clear();
+        crawlingBlockBlackList.clear();
         crawlingModes.addAll(config.getStringList("crawling.modes"));
         crawlingKeys.addAll(config.getStringList("crawling.keys"));
         crawlingWorldBlackList.addAll(config.getStringList("crawling.blackList.worlds"));
