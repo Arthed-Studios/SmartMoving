@@ -64,7 +64,7 @@ public class PlayerToggleSneak implements Listener {
                 }
             }
 
-            if (player.getLocation().getPitch() > 87) { // The player is looking downwards and is not crawling
+            if (player.getLocation().getPitch() > 85) { // The player is looking downwards and is not crawling
                 if (config.getCrawlingKeys().contains("DOUBLE_SHIFT")) { //if double sneaking is enabled
                     if (!doubleSneakingCheck.contains(player)) {
                         doubleSneakingCheck.add(player);
@@ -80,7 +80,7 @@ public class PlayerToggleSneak implements Listener {
                         this.holdCheck.remove(player);
                         int time = Integer.parseInt(start_crawling.split("_")[1]);
                         this.holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            if (player.isSneaking() && player.getLocation().getPitch() > 87) {
+                            if (player.isSneaking() && player.getLocation().getPitch() > 85) {
                                 smartMovingManager.startCrawling(player);
                                 this.holdCheck.remove(player);
                             }
