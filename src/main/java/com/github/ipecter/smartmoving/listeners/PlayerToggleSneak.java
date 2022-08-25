@@ -76,16 +76,21 @@ public class PlayerToggleSneak implements Listener {
                     }
                     return;
                 }
-                for (String start_crawling : config.getCrawlingKeys()) {
-                    if (start_crawling.contains("HOLD")) {
-                        this.holdCheck.remove(player);
-                        int time = Integer.parseInt(start_crawling.split("_")[1]);
-                        this.holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                for (String startCrawling : config.getCrawlingKeys()) {
+                    if (startCrawling.contains("HOLD")) {
+                        BukkitTask bukkitTask = holdCheck.get(player);
+                        if (bukkitTask != null) {
+                            bukkitTask.cancel();
+                        }
+                        holdCheck.remove(player);
+                        long time = Long.parseLong(startCrawling.split("_")[1]);
+                        SmartMoving.debug("HOLD_X " + String.valueOf(time));
+                        holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
                             if (player.isSneaking() && player.getLocation().getPitch() > 85) {
                                 smartMovingManager.startCrawling(player);
-                                this.holdCheck.remove(player);
+                                holdCheck.remove(player);
                             }
-                        }, time));
+                        }, time * 20));
                         return;
                     }
                 }
