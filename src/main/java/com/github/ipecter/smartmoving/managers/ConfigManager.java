@@ -37,11 +37,11 @@ public class ConfigManager {
     }
 
     public boolean isDebug() {
-        return motd;
+        return debug;
     }
 
     public void setDebug(boolean motd) {
-        this.motd = motd;
+        this.debug = debug;
     }
 
     public String getLocale() {
