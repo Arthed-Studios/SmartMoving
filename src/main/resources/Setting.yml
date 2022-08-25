@@ -10,6 +10,10 @@ motd: true
 #메세지 언어, 새로운 언어 파일을 만들 수 있습니다, Locale_KR.yml = KR
 locale: "EN"
 
+#For Development
+#개발 전용
+debug: false
+
 crawling:
 
   #HOLD - players will continue crawling as long as they keep shift pressed

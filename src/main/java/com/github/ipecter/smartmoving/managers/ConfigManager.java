@@ -5,19 +5,16 @@ import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ConfigManager {
 
     private boolean enablePlugin = true;
     private boolean motd = true;
+    private boolean debug = false;
     private String locale = "EN";
     private String prefix = IridiumColorAPI.process("<GRADIENT:47cc1f>[ SmartMoving ]</GRADIENT:a3a3a3> ");
-    private String reloadMsg = "";
-    private String commandWrongUsage = "";
-    private String noPermission = "";
+    private Map<String, String> msgKeyMap = Collections.synchronizedMap(new HashMap<>());
     private List<String> crawlingModes = Collections.synchronizedList(new ArrayList<>());
     private List<String> crawlingKeys = Collections.synchronizedList(new ArrayList<>());
     private List<String> crawlingBlockBlackList = Collections.synchronizedList(new ArrayList<>());
@@ -39,6 +36,14 @@ public class ConfigManager {
         this.motd = motd;
     }
 
+    public boolean isDebug() {
+        return motd;
+    }
+
+    public void setDebug(boolean motd) {
+        this.motd = motd;
+    }
+
     public String getLocale() {
         return locale;
     }
@@ -47,36 +52,8 @@ public class ConfigManager {
         this.locale = locale;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getReloadMsg() {
-        return reloadMsg;
-    }
-
-    public void setReloadMsg(String reloadMsg) {
-        this.reloadMsg = reloadMsg;
-    }
-
-    public String getCommandWrongUsage() {
-        return commandWrongUsage;
-    }
-
-    public void setCommandWrongUsage(String commandWrongUsage) {
-        this.commandWrongUsage = commandWrongUsage;
-    }
-
-    public String getNoPermission() {
-        return noPermission;
-    }
-
-    public void setNoPermission(String noPermission) {
-        this.noPermission = noPermission;
+    public String getTranslation(String key) {
+        return msgKeyMap.getOrDefault(key, "");
     }
 
     public ConfigManager() {
@@ -125,11 +102,13 @@ public class ConfigManager {
 
     private void initMessage(File file) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        prefix = config.getString("prefix", "").isEmpty() ? prefix : config.getString("prefix");
-        reloadMsg = config.getString("reloadMsg");
-        commandWrongUsage = config.getString("commandWrongUsage");
-        noPermission = config.getString("noPermission");
-
+        for (String key : config.getKeys(false)) {
+            if (key.equals("prefix")) {
+                msgKeyMap.put(key, config.getString("prefix", "").isEmpty() ? prefix : config.getString("prefix"));
+            } else {
+                msgKeyMap.put(key, config.getString(key));
+            }
+        }
         RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_EN.yml");
         RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_KR.yml");
     }
@@ -139,6 +118,7 @@ public class ConfigManager {
         enablePlugin = config.getBoolean("enablePlugin");
         motd = config.getBoolean("motd");
         locale = config.getString("locale");
+        debug = config.getBoolean("debug");
 
         initCrawling(config);
 

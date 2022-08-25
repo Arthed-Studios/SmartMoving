@@ -1,6 +1,7 @@
 package com.github.ipecter.smartmoving.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ public class PlayerJump implements Listener {
     public void onJump(PlayerJumpEvent e) {
         Player player = e.getPlayer();
         if (smartMovingManager.isCrawling(player)) {
-            System.out.println("Stop Crawling - Jump ");
+            SmartMoving.debug("Stop Crawling - Jump");
             smartMovingManager.stopCrawling(player);
         }
     }

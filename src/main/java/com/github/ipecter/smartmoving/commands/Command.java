@@ -2,7 +2,6 @@ package com.github.ipecter.smartmoving.commands;
 
 import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -20,14 +19,13 @@ public class Command implements CommandExecutor, TabCompleter {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             if (sender.hasPermission("smartmoving.reload")) {
                 configManager.initConfigFiles();
-                sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getPrefix() + configManager.getReloadMsg()));
-                sync();
+                sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getTranslation("prefix") + configManager.getTranslation("reloadMsg")));
             } else {
-                sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getPrefix() + configManager.getNoPermission()));
+                sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getTranslation("prefix") + configManager.getTranslation("noPermission")));
             }
             return true;
         } else {
-            sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getPrefix() + configManager.getCommandWrongUsage()));
+            sender.sendMessage(RTUUtilAPI.getTextManager().formatted(sender instanceof Player ? (Player) sender : null, configManager.getTranslation("prefix") + configManager.getTranslation("commandWrongUsage")));
             return true;
         }
     }
@@ -38,9 +36,5 @@ public class Command implements CommandExecutor, TabCompleter {
             return Arrays.asList("reload");
         }
         return Arrays.asList();
-    }
-
-    private void sync() {
-        for (Player p : Bukkit.getOnlinePlayers()) p.updateCommands();
     }
 }

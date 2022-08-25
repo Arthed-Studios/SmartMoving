@@ -47,13 +47,11 @@ public class SmartMovingManager {
     }
 
     public void stopCrawling(Player player) {
-        System.out.println("E");
         getPlayerCrawling(player).stopCrawling();
         players.remove(player);
     }
 
     public boolean isCrawling(Player player) {
-        System.out.println("D: " + players.containsKey(player));
         return players.containsKey(player);
     }
 

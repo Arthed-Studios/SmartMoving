@@ -25,7 +25,7 @@ public class PlayerToggleSneak implements Listener {
 
     private final Set<Player> doubleSneakingCheck = new HashSet<>();
     private final Map<Player, BukkitTask> holdCheck = new HashMap<>();
-    private final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
+    private final Plugin plugin = smartMovingManager.getPlugin();
 
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent e) {
@@ -36,7 +36,7 @@ public class PlayerToggleSneak implements Listener {
         }
         if (e.isSneaking()) {
             if (smartMovingManager.isCrawling(player)) {
-                System.out.println("Stop Crawling - Sneak");
+                SmartMoving.debug("Stop Crawling - Sneak");
                 smartMovingManager.stopCrawling(player);
                 return;
             }
@@ -49,8 +49,8 @@ public class PlayerToggleSneak implements Listener {
                 Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                 return;
             }
-            System.out.println("Modes: " + config.getCrawlingModes());
-            System.out.println("Keys: " + config.getCrawlingKeys());
+            SmartMoving.debug("Modes: " + config.getCrawlingModes());
+            SmartMoving.debug("Keys: " + config.getCrawlingKeys());
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (Utils.isInFrontOfATunnel(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
