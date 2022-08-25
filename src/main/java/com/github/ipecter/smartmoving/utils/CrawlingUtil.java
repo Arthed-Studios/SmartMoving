@@ -2,20 +2,20 @@ package com.github.ipecter.smartmoving.utils;
 
 import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
-import com.github.ipecter.smartmoving.impl.WorldGuardImplementation;
+import com.github.ipecter.smartmoving.dependencies.WorldGuard;
+import com.github.ipecter.smartmoving.enums.CrawlingWallFace;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Utils {
+public class CrawlingUtil {
     private static final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
-    private static final WorldGuardImplementation worldGuard = SmartMovingManager.getInstance().getWorldGuard();
+    private static final WorldGuard worldGuard = SmartMovingManager.getInstance().getWorldGuard();
     private static final ConfigManager configManager = ConfigManager.getInstance();
     public static BlockData BARRIER_BLOCK_DATA = Bukkit.createBlockData(Material.BARRIER);
 
@@ -103,14 +103,14 @@ public class Utils {
     }
 
     public static boolean isInFrontOfATunnel(Player player) {
-        WallFace facing = WallFace.fromBlockFace(player.getFacing());
+        CrawlingWallFace facing = CrawlingWallFace.fromBlockFace(player.getFacing());
 
         Location location = player.getLocation().add(facing.xOffset, 1, facing.zOffset);
         Block block = location.getBlock();
         double distanceLimit = facing.distance;
 
         if (block.getType().isSolid() && location.subtract(0, 1, 0).getBlock().isPassable()) {
-            if (facing.equals(WallFace.EAST) || facing.equals(WallFace.WEST)) {
+            if (facing.equals(CrawlingWallFace.EAST) || facing.equals(CrawlingWallFace.WEST)) {
                 return Math.abs(location.getX() - block.getX()) < distanceLimit;
             } else {
                 return Math.abs(location.getZ() - block.getZ()) < distanceLimit;
@@ -118,38 +118,5 @@ public class Utils {
         }
 
         return false;
-    }
-
-    public enum WallFace {
-
-        NORTH(0, -1, 0.31),
-        SOUTH(0, 1, 0.70),
-        WEST(-1, 0, 0.31),
-        EAST(1, 0, 0.70);
-
-
-        public final int xOffset;
-        public final int zOffset;
-
-        public final double distance;
-
-        WallFace(int xOffset, int zOffset, double distance) {
-            this.xOffset = xOffset;
-            this.zOffset = zOffset;
-            this.distance = distance;
-        }
-
-        public static WallFace fromBlockFace(BlockFace blockFace) {
-            switch (blockFace) {
-                case NORTH:
-                    return NORTH;
-                case SOUTH:
-                    return SOUTH;
-                case WEST:
-                    return WEST;
-                default: //EAST
-                    return EAST;
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 package com.github.ipecter.smartmoving;
 
 import com.github.ipecter.nms.NmsPackets;
-import com.github.ipecter.smartmoving.impl.WorldGuardImplementation;
+import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -14,7 +14,7 @@ public class SmartMovingManager {
     protected final Map<Player, SMPlayer> players = Collections.synchronizedMap(new HashMap<>());
 
     protected NmsPackets nmsPacketManager;
-    protected WorldGuardImplementation worldGuard;
+    protected WorldGuard worldGuard;
     private Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
 
     public SmartMovingManager() {
@@ -36,7 +36,7 @@ public class SmartMovingManager {
         return nmsPacketManager;
     }
 
-    public WorldGuardImplementation getWorldGuard() {
+    public WorldGuard getWorldGuard() {
         return this.worldGuard;
     }
 

@@ -3,7 +3,7 @@ package com.github.ipecter.smartmoving;
 import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
 import com.github.ipecter.rtu.utilapi.managers.VersionManager;
 import com.github.ipecter.smartmoving.commands.Command;
-import com.github.ipecter.smartmoving.impl.WorldGuardImplementation;
+import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import com.github.ipecter.smartmoving.listeners.*;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.nms.LegacyIndependentNmsPackets;
@@ -87,7 +87,7 @@ public final class SmartMoving extends JavaPlugin {
     private void loadWG() {
         Plugin worldGuardPlugin = getServer().getPluginManager().getPlugin("WorldGuard");
         if (worldGuardPlugin != null) {
-            SmartMovingManager.getInstance().worldGuard = new WorldGuardImplementation(worldGuardPlugin, this);
+            SmartMovingManager.getInstance().worldGuard = new WorldGuard(worldGuardPlugin, this);
         }
     }
 

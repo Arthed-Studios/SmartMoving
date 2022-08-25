@@ -4,7 +4,7 @@ import com.github.ipecter.smartmoving.SMPlayer;
 import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
-import com.github.ipecter.smartmoving.utils.Utils;
+import com.github.ipecter.smartmoving.utils.CrawlingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ public class PlayerToggleSneak implements Listener {
     public void onToggleSneak(PlayerToggleSneakEvent e) {
         Player player = e.getPlayer();
         SMPlayer smPlayer = smartMovingManager.getPlayerCrawling(player);
-        if (!Utils.canCrawl(player)) {
+        if (!CrawlingUtil.canCrawl(player)) {
             return;
         }
         if (e.isSneaking()) {
@@ -53,7 +53,7 @@ public class PlayerToggleSneak implements Listener {
             SmartMoving.debug("Modes: " + config.getCrawlingModes());
             SmartMoving.debug("Keys: " + config.getCrawlingKeys());
             if (config.getCrawlingModes().contains("TUNNELS")) {
-                if (Utils.isInFrontOfATunnel(player)) {
+                if (CrawlingUtil.isInFrontOfATunnel(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         SMPlayer smPlayer1 = smartMovingManager.getPlayerCrawling(player);

@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class PlayerDeath implements Listener {
+public class PlayerDamage implements Listener {
 
     private final SmartMovingManager smartMovingManager = SmartMovingManager.getInstance();
 

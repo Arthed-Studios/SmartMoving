@@ -2,7 +2,7 @@ package com.github.ipecter.smartmoving;
 
 import com.github.ipecter.nms.NmsPackets;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
-import com.github.ipecter.smartmoving.utils.Utils;
+import com.github.ipecter.smartmoving.utils.CrawlingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class SMPlayer {
     }
 
     public void startCrawling() {
-        if (!Utils.canCrawl(this.player)) {
+        if (!CrawlingUtil.canCrawl(this.player)) {
             this.stopCrawling();
             return;
         }
@@ -45,8 +45,8 @@ public class SMPlayer {
                 barrierBlock = blockAbovePlayer;
             } else {
                 barrierBlock = blockAbovePlayer;
-                if (Utils.checkAbove(blockAbovePlayer)) {
-                    player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
+                if (CrawlingUtil.checkAbove(blockAbovePlayer)) {
+                    player.sendBlockChange(blockAbovePlayer.getLocation(), CrawlingUtil.BARRIER_BLOCK_DATA);
                 }
             }
         }, 0, 1);
@@ -64,7 +64,7 @@ public class SMPlayer {
                 nonGround = 0;
                 return;
             }
-            if (!Utils.canCrawlCancel(this.player)) {
+            if (!CrawlingUtil.canCrawlCancel(this.player)) {
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
                 return;
             } else if (this.player.getVelocity().getY() > 0 && this.player.getNoDamageTicks() == 0) {
@@ -85,10 +85,10 @@ public class SMPlayer {
     }
 
     public void replaceBarrier(Block blockAbovePlayer) {
-        Utils.revertBlockPacket(player, barrierBlock);
+        CrawlingUtil.revertBlockPacket(player, barrierBlock);
         barrierBlock = blockAbovePlayer;
-        if (Utils.checkAbove(blockAbovePlayer)) {
-            player.sendBlockChange(blockAbovePlayer.getLocation(), Utils.BARRIER_BLOCK_DATA);
+        if (CrawlingUtil.checkAbove(blockAbovePlayer)) {
+            player.sendBlockChange(blockAbovePlayer.getLocation(), CrawlingUtil.BARRIER_BLOCK_DATA);
         }
     }
 
@@ -97,8 +97,8 @@ public class SMPlayer {
         player.setSwimming(false);
 
         if (barrierBlock != null) {
-            Utils.revertBlockPacket(player, barrierBlock);
-            Utils.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
+            CrawlingUtil.revertBlockPacket(player, barrierBlock);
+            CrawlingUtil.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
             nmsPacketManager.removeFakeBlocks(player);
         }
 

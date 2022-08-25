@@ -1,4 +1,4 @@
-package com.github.ipecter.smartmoving.impl;
+package com.github.ipecter.smartmoving.dependencies;
 
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -20,8 +20,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
-public class WorldGuardImplementation {
+public class WorldGuard {
     public static StateFlag ALLOW_CRAWLING;
+    public static StateFlag ALLOW_WALLJUMP;
     private final Plugin owningPlugin = SmartMovingManager.getInstance().getPlugin();
     private Object worldGuard = null;
     private WorldGuardPlugin worldGuardPlugin = null;
@@ -34,7 +35,7 @@ public class WorldGuardImplementation {
     private boolean initialized = false;
 
 
-    public WorldGuardImplementation(Plugin plugin, Plugin owningPlugin) {
+    public WorldGuard(Plugin plugin, Plugin owningPlugin) {
         if (plugin instanceof WorldGuardPlugin) {
             worldGuardPlugin = (WorldGuardPlugin) plugin;
 
@@ -81,13 +82,20 @@ public class WorldGuardImplementation {
             Method getFlagRegistryMethod = worldGuard.getClass().getMethod("getFlagRegistry");
             registry = (FlagRegistry) getFlagRegistryMethod.invoke(worldGuard);
             try {
-                StateFlag flag = new StateFlag("crawling", true);
-                registry.register(flag);
-                ALLOW_CRAWLING = flag;
+                StateFlag crawlingFlag = new StateFlag("crawling", true);
+                StateFlag wallJumpFlag = new StateFlag("walljump", true);
+                registry.register(crawlingFlag);
+                registry.register(wallJumpFlag);
+                ALLOW_CRAWLING = crawlingFlag;
+                ALLOW_WALLJUMP = wallJumpFlag;
             } catch (IllegalStateException | FlagConflictException e) {
-                Flag<?> existing = registry.get("crawling");
-                if (existing instanceof StateFlag) {
-                    ALLOW_CRAWLING = (StateFlag) existing;
+                Flag<?> crawlingExisting = registry.get("crawling");
+                if (crawlingExisting instanceof StateFlag) {
+                    ALLOW_CRAWLING = (StateFlag) crawlingExisting;
+                }
+                Flag<?> wallJumpExisting = registry.get("walljump");
+                if (wallJumpExisting instanceof StateFlag) {
+                    ALLOW_CRAWLING = (StateFlag) wallJumpExisting;
                 }
             }
         } catch (Exception ex) {
@@ -192,6 +200,16 @@ public class WorldGuardImplementation {
         if (checkSet == null) return true;
 
         return checkSet.queryState(getAssociable(player), ALLOW_CRAWLING) != StateFlag.State.DENY;
+    }
+
+    public boolean canWallJump(Player player) {
+        Location location = player.getLocation();
+        if (worldGuardPlugin == null) return true;
+
+        ApplicableRegionSet checkSet = getRegionSet(location);
+        if (checkSet == null) return true;
+
+        return checkSet.queryState(getAssociable(player), ALLOW_WALLJUMP) != StateFlag.State.DENY;
     }
 
 }
