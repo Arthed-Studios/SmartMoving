@@ -15,15 +15,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Level;
-
 public final class SmartMoving extends JavaPlugin {
 
     private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private VersionManager versionManager = RTUUtilAPI.getVersionManager();
 
     public final static void debug(String debugMessage) {
-        getPlugin(SmartMoving.class).getLogger().log(Level.FINEST, debugMessage);
+        if (ConfigManager.getInstance().isDebug()) {
+            SmartMoving.getPlugin(SmartMoving.class).getLogger().info(debugMessage);
+        }
     }
 
     @Override

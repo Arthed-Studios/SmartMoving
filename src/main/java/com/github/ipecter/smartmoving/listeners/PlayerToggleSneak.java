@@ -35,6 +35,7 @@ public class PlayerToggleSneak implements Listener {
             return;
         }
         if (e.isSneaking()) {
+            SmartMoving.debug("Trigger Sneak");
             if (smartMovingManager.isCrawling(player)) {
                 SmartMoving.debug("Stop Crawling - Sneak");
                 smartMovingManager.stopCrawling(player);
