@@ -77,7 +77,6 @@ public class Utils {
 
     public static boolean checkAbove(Player player) {
         Block block = player.getLocation().add(0, 1.5, 0).getBlock();
-        System.out.println("ABC: " + player.getLocation().getBlock().getLocation().getBlockY() + " / " + block.getLocation().getBlockY());
         if (player.getLocation().toBlockLocation().equals(player.getEyeLocation().toBlockLocation())) return true;
         return checkAbove(block);
     }

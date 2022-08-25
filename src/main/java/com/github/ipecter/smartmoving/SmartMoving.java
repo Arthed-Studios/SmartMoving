@@ -10,7 +10,6 @@ import com.github.ipecter.smartmoving.nms.LegacyIndependentNmsPackets;
 import com.github.ipecter.smartmoving.nms.VersionIndependentNmsPackets;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -41,6 +40,11 @@ public final class SmartMoving extends JavaPlugin {
     @Override
     public void onEnable() {
         RTUUtilAPI.init(this);
+        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
+            Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
+            Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         loadNMS();
         registerEvent();
         setExecutor();
@@ -93,11 +97,6 @@ public final class SmartMoving extends JavaPlugin {
             SmartMovingManager.getInstance().nmsPacketManager = new LegacyIndependentNmsPackets(Bukkit.getWorlds().get(0));
         } else {
             SmartMovingManager.getInstance().nmsPacketManager = new VersionIndependentNmsPackets(Bukkit.getWorlds().get(0));
-
-            //Checking if current version was not tested yet
-            if (versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cThe plugin was not made for this version, proceed with caution."));
-            }
         }
     }
 }
