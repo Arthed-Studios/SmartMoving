@@ -14,16 +14,24 @@ public class SMPlayer {
     private final static ConfigManager config = ConfigManager.getInstance();
     private final static NmsPackets nmsPacketManager = manager.getNmsPacketManager();
 
+    //[ General Part ]
     private final Player player;
-
+    //Every 1 Tick Task for Movement
+    private BukkitTask moveTask;
+    
+    //[ Crawling Part ]
     private Block barrierBlock;
-
-    private BukkitTask moveTask; // task running every 3 ticks making sure the barrier is above the player
-    private BukkitTask canCrawlTask; // task running every 20 ticks checking if the player can continue crawling
+    
+    private BukkitTask canCrawlTask;
+    
     private int nonGround = 0;
 
     private Boolean toggleMode;
 
+    //[ WallJump Part ]
+    
+    
+    
     protected SMPlayer(Player player) {
         this.player = player;
         startCrawling();
