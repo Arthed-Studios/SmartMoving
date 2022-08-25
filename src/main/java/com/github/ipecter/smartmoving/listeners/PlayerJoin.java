@@ -16,10 +16,10 @@ public class PlayerJoin implements Listener {
         if (!configManager.isEnablePlugin()) return;
         Player player = e.getPlayer();
         if (configManager.isMotd()) {
-            player.sendMessage(RTUUtilAPI.getTextManager().formatted(player, configManager.getTranslation("prefix") + "&fSmartMoving developed by IPECTER, Arthed(Original)"));
+            player.sendMessage(RTUUtilAPI.getTextManager().formatted(player, configManager.getTranslation("prefix") + "&fSmartMoving developed by IPECTER, Arthed (Original)"));
         } else {
             if (player.isOp())
-                player.sendMessage(RTUUtilAPI.getTextManager().formatted(player, configManager.getTranslation("prefix") + "&fSmartMoving developed by IPECTER, Arthed(Original)"));
+                player.sendMessage(RTUUtilAPI.getTextManager().formatted(player, configManager.getTranslation("prefix") + "&fSmartMoving developed by IPECTER, Arthed (Original)"));
         }
     }
 }
