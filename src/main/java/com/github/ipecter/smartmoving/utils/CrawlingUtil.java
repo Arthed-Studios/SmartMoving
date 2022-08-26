@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class CrawlingUtil {
+
     private static final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
     private static final WorldGuard worldGuard = SmartMovingManager.getInstance().getWorldGuard();
     private static final ConfigManager configManager = ConfigManager.getInstance();
