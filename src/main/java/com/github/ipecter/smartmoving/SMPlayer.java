@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 public class SMPlayer {
 
@@ -124,4 +125,73 @@ public class SMPlayer {
         return toggleMode;
     }
 
+
+    public void onWallJumpStart() {
+        if (!canWallJump())
+            return;
+
+        WallJumpStartEvent event = new WallJumpStartEvent(this);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return;
+
+        onWall = true;
+        wallJumping = true;
+        lastFacing = LocationUtils.getPlayerFacing(player);
+        lastJumpLocation = player.getLocation();
+        if (remainingJumps > 0)
+            remainingJumps--;
+
+        //Stop some anti cheat checks that might be caused by wall-jumping
+        AntiCheatUtils.stopPotentialAntiCheatChecks(player);
+
+        //play sound and spawn particles
+        EffectUtils.playWallJumpSound(player, lastFacing);
+        EffectUtils.spawnSlidingParticles(player, 5, lastFacing);
+
+        //stop the player from falling and moving while on the wall
+        //or make them slide down
+        velocityY = 0;
+/*        if(BukkitUtils.isVersionBefore(BukkitUtils.Version.V1_9))
+            velocityY = 0.04f;*/
+        velocityTask = Bukkit.getScheduler().runTaskTimerAsynchronously(WallJump.getInstance(), () -> {
+            player.setVelocity(new Vector(0, velocityY, 0));
+            if (velocityY != 0) {
+                EffectUtils.spawnSlidingParticles(player, 2, lastFacing);
+                if (sliding) {
+                    if (player.isOnGround() || !LocationUtils.getBlockPlayerIsStuckOn(player, lastFacing).getType().isSolid()) {
+                        Bukkit.getScheduler().runTask(WallJump.getInstance(), () -> {
+                            player.setFallDistance(0);
+                            player.teleport(player.getLocation());
+                            onWallJumpEnd(false);
+                        });
+                    }
+                    if (lastJumpLocation.getY() - player.getLocation().getY() >= 1.2) {
+                        lastJumpLocation = player.getLocation();
+                        EffectUtils.playWallJumpSound(player, lastFacing);
+                    }
+                }
+            }
+        }, 0, 1);
+
+        //make the player fall | slide when the time runs out
+        if (fallTask != null)
+            fallTask.cancel();
+        fallTask = Bukkit.getScheduler().runTaskLaterAsynchronously(WallJump.getInstance(), () -> {
+            if (onWall) {
+                if (config.getBoolean("slide")) {
+                    velocityY = (float) -config.getDouble("slidingSpeed");
+                    sliding = true;
+                } else {
+                    Bukkit.getScheduler().runTask(WallJump.getInstance(), (Runnable) this::onWallJumpEnd);
+                }
+            }
+        }, (long) (config.getDouble("timeOnWall") * 20));
+
+        //cancel the task for resetting wall jumping if the player wall jumps
+        if (stopWallJumpingTask != null)
+            stopWallJumpingTask.cancel();
+
+
+    }
 }
