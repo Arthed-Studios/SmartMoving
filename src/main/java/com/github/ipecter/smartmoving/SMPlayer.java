@@ -1,9 +1,12 @@
 package com.github.ipecter.smartmoving;
 
 import com.github.ipecter.nms.NmsPackets;
+import com.github.ipecter.smartmoving.enums.WallJumpWallFace;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.utils.CrawlingUtil;
+import com.github.ipecter.smartmoving.utils.WallJumpUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,29 +20,37 @@ public class SMPlayer {
 
     //[ General Part ]
     private final Player player;
+
+    //[ Crawling Part ]
     //Every 1 Tick Task for Movement
     private BukkitTask moveTask;
-    
-    //[ Crawling Part ]
+
     private Block barrierBlock;
-    
+
     private BukkitTask canCrawlTask;
-    
+
+    //For Checking Player Non-Ground Time
     private int nonGround = 0;
 
     private Boolean toggleMode;
 
     //[ WallJump Part ]
-    
-    
-    
+    private boolean wallJumping;
+    private boolean onWall;
+    private boolean sliding;
+
+    private WallJumpWallFace lastFacing;
+    private Location lastJumpLocation;
+    private int remainingJumps = -1;
+
+
     protected SMPlayer(Player player) {
         this.player = player;
         startCrawling();
     }
 
     public void startCrawling() {
-        if (!CrawlingUtil.canCrawl(this.player)) {
+        if (!CrawlingUtil.canCrawl(player)) {
             this.stopCrawling();
             return;
         }
@@ -127,17 +138,12 @@ public class SMPlayer {
 
 
     public void onWallJumpStart() {
-        if (!canWallJump())
-            return;
-
-        WallJumpStartEvent event = new WallJumpStartEvent(this);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled())
+        if (!WallJumpUtil.canWallJump(player, lastJumpLocation, onWall))
             return;
 
         onWall = true;
         wallJumping = true;
-        lastFacing = LocationUtils.getPlayerFacing(player);
+        lastFacing = WallJumpUtil.getPlayerFacing(player);
         lastJumpLocation = player.getLocation();
         if (remainingJumps > 0)
             remainingJumps--;

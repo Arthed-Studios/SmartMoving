@@ -1,6 +1,6 @@
 package com.github.ipecter.smartmoving.managers;
 
-import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
+import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -88,8 +88,8 @@ public class ConfigManager {
     }
 
     public void initConfigFiles() {
-        initSetting(RTUUtilAPI.getFileManager().copyResource("Setting.yml"));
-        initMessage(RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
+        initSetting(RTUPluginLib.getFileManager().copyResource("Setting.yml"));
+        initMessage(RTUPluginLib.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
     }
 
     public List<String> getCrawlingWorldBlackList() {
@@ -109,8 +109,8 @@ public class ConfigManager {
                 msgKeyMap.put(key, config.getString(key));
             }
         }
-        RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_EN.yml");
-        RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_KR.yml");
+        RTUPluginLib.getFileManager().copyResource("Translations", "Locale_EN.yml");
+        RTUPluginLib.getFileManager().copyResource("Translations", "Locale_KR.yml");
     }
 
     private void initSetting(File file) {

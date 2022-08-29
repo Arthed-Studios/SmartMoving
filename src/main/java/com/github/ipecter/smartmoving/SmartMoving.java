@@ -1,7 +1,7 @@
 package com.github.ipecter.smartmoving;
 
-import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
-import com.github.ipecter.rtu.utilapi.managers.VersionManager;
+import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
+import com.github.ipecter.rtu.pluginlib.managers.VersionManager;
 import com.github.ipecter.smartmoving.commands.Command;
 import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import com.github.ipecter.smartmoving.listeners.*;
@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class SmartMoving extends JavaPlugin {
 
     private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
-    private VersionManager versionManager = RTUUtilAPI.getVersionManager();
+    private VersionManager versionManager = RTUPluginLib.getVersionManager();
 
     public final static void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
@@ -29,7 +29,7 @@ public final class SmartMoving extends JavaPlugin {
     @Override
     public void onDisable() {
         clearBlock();
-        Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&cDisable&f!"));
+        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cDisable&f!"));
     }
 
     @Override
@@ -39,17 +39,17 @@ public final class SmartMoving extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        RTUUtilAPI.init(this);
+        RTUPluginLib.init(this);
         if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
-            Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
-            Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
+            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
+            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
             Bukkit.getPluginManager().disablePlugin(this);
         }
         loadNMS();
         registerEvent();
         setExecutor();
         ConfigManager.getInstance().initConfigFiles();
-        Bukkit.getLogger().info(RTUUtilAPI.getTextManager().formatted(prefix + "&aEnable&f!"));
+        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
     }
 
     private void clearBlock() {
@@ -75,7 +75,7 @@ public final class SmartMoving extends JavaPlugin {
 
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            RTUUtilAPI.getDependencyManager().setUsePAPI(true);
+            RTUPluginLib.getDependencyManager().setUsePAPI(true);
         }
     }
 
