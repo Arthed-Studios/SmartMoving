@@ -9,14 +9,16 @@ import org.bukkit.util.Vector;
 
 public class WallJumpUtil {
 
-    public static boolean canWallJump(Player player, Location lastJumpLocation) {
+    public static boolean canWallJump(Player player) {
         WallJumpWallFace facing = getPlayerFacing(player);
+        WallJumpWallFace lastFacing;
+        Location lastJumpLocation;
+        int remainingJumps;
         if (lastJumpLocation != null)
             //used so height doesn't matter when calculating distance between the players location and the last jump location
             lastJumpLocation.setY(player.getLocation().getY());
         if (
-                !enabled ||
-                        onWall || //player is already stuck to an wall
+                onWall || //player is already stuck to an wall
                         remainingJumps == 0 || //player reached jump limit
                         (config.getBoolean("requireDirectionChange") && lastFacing != null && lastFacing.equals(facing)) || //player is facing the same direction as the last jump
                         (lastJumpLocation != null && player.getLocation().distance(lastJumpLocation) <= config.getDouble("minimumDistance")) ||  //player is too close to the last jump location

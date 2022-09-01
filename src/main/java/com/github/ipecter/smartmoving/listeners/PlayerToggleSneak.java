@@ -30,7 +30,7 @@ public class PlayerToggleSneak implements Listener {
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent e) {
         Player player = e.getPlayer();
-        SMPlayer smPlayer = smartMovingManager.getPlayerCrawling(player);
+        SMPlayer smPlayer = smartMovingManager.getPlayer(player);
         if (!CrawlingUtil.canCrawl(player)) {
             return;
         }
@@ -56,7 +56,7 @@ public class PlayerToggleSneak implements Listener {
                 if (CrawlingUtil.isInFrontOfATunnel(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        SMPlayer smPlayer1 = smartMovingManager.getPlayerCrawling(player);
+                        SMPlayer smPlayer1 = smartMovingManager.getPlayer(player);
                         if (smPlayer1 != null) {
                             smPlayer1.stopCrawling();
                         }

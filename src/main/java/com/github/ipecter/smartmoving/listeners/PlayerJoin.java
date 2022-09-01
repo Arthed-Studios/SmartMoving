@@ -1,6 +1,7 @@
 package com.github.ipecter.smartmoving.listeners;
 
 import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
+import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,7 +10,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
 
-    private ConfigManager configManager = ConfigManager.getInstance();
+    private final ConfigManager configManager = ConfigManager.getInstance();
+    private final SmartMovingManager smartMovingManager = SmartMovingManager.getInstance();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -21,6 +23,7 @@ public class PlayerJoin implements Listener {
             if (player.isOp())
                 player.sendMessage(RTUPluginLib.getTextManager().formatted(player, configManager.getTranslation("prefix") + "&fSmartMoving developed by IPECTER, Arthed (Original)"));
         }
+        smartMovingManager.addPlayer(player);
     }
 }
 

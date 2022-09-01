@@ -21,6 +21,10 @@ public class SMPlayer {
     //[ General Part ]
     private final Player player;
 
+
+    private boolean wallJumping;
+    private boolean crawling;
+
     //[ Crawling Part ]
     //Every 1 Tick Task for Movement
     private BukkitTask moveTask;
@@ -35,14 +39,57 @@ public class SMPlayer {
     private Boolean toggleMode;
 
     //[ WallJump Part ]
-    private boolean wallJumping;
     private boolean onWall;
     private boolean sliding;
 
+    private int remainingJumps = -1;
     private WallJumpWallFace lastFacing;
     private Location lastJumpLocation;
-    private int remainingJumps = -1;
 
+    private float velocityY;
+    private BukkitTask velocityTask;
+    private BukkitTask fallTask;
+    private BukkitTask stopWallJumpingTask;
+
+    public boolean isWallJumping() {
+        return wallJumping;
+    }
+
+    public void setWallJumping(boolean wallJumping) {
+        this.wallJumping = wallJumping;
+    }
+
+    public boolean isCrawling() {
+        return crawling;
+    }
+
+    public void setCrawling(boolean crawling) {
+        this.crawling = crawling;
+    }
+
+    public boolean isOnWall() {
+        return onWall;
+    }
+
+    public boolean isSliding() {
+        return sliding;
+    }
+
+    public int getRemainingJumps() {
+        return remainingJumps;
+    }
+
+    public WallJumpWallFace getLastFacing() {
+        return lastFacing;
+    }
+
+    public Location getLastJumpLocation() {
+        return lastJumpLocation;
+    }
+
+    public float getVelocityY() {
+        return velocityY;
+    }
 
     protected SMPlayer(Player player) {
         this.player = player;
@@ -93,7 +140,6 @@ public class SMPlayer {
             }
         }, 5, 1);
 
-
         // Check if toggle mode should be used
         boolean hold = config.getCrawlingModes().contains("HOLD");
         boolean toggle = config.getCrawlingModes().contains("TOGGLE");
@@ -102,6 +148,8 @@ public class SMPlayer {
         } else {
             this.toggleMode = toggle;
         }
+
+        crawling = true;
     }
 
     public void replaceBarrier(Block blockAbovePlayer) {
@@ -129,7 +177,7 @@ public class SMPlayer {
         if (canCrawlTask != null) {
             canCrawlTask.cancel();
         }
-        SmartMovingManager.getInstance().removePlayer(player);
+        crawling = false;
     }
 
     public Boolean toggleMode() {
@@ -138,7 +186,7 @@ public class SMPlayer {
 
 
     public void onWallJumpStart() {
-        if (!WallJumpUtil.canWallJump(player, lastJumpLocation, onWall))
+        if (!WallJumpUtil.canWallJump(player))
             return;
 
         onWall = true;
@@ -148,25 +196,22 @@ public class SMPlayer {
         if (remainingJumps > 0)
             remainingJumps--;
 
-        //Stop some anti cheat checks that might be caused by wall-jumping
-        AntiCheatUtils.stopPotentialAntiCheatChecks(player);
-
         //play sound and spawn particles
-        EffectUtils.playWallJumpSound(player, lastFacing);
-        EffectUtils.spawnSlidingParticles(player, 5, lastFacing);
+        WallJumpUtil.playWallJumpSound(player, lastFacing);
+        WallJumpUtil.spawnSlidingParticles(player, 5, lastFacing);
 
         //stop the player from falling and moving while on the wall
         //or make them slide down
         velocityY = 0;
 /*        if(BukkitUtils.isVersionBefore(BukkitUtils.Version.V1_9))
             velocityY = 0.04f;*/
-        velocityTask = Bukkit.getScheduler().runTaskTimerAsynchronously(WallJump.getInstance(), () -> {
+        velocityTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
             player.setVelocity(new Vector(0, velocityY, 0));
             if (velocityY != 0) {
-                EffectUtils.spawnSlidingParticles(player, 2, lastFacing);
+                WallJumpUtil.spawnSlidingParticles(player, 2, lastFacing);
                 if (sliding) {
-                    if (player.isOnGround() || !LocationUtils.getBlockPlayerIsStuckOn(player, lastFacing).getType().isSolid()) {
-                        Bukkit.getScheduler().runTask(WallJump.getInstance(), () -> {
+                    if (player.isOnGround() || !WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing).getType().isSolid()) {
+                        Bukkit.getScheduler().runTask(manager.getPlugin(), () -> {
                             player.setFallDistance(0);
                             player.teleport(player.getLocation());
                             onWallJumpEnd(false);
@@ -174,7 +219,7 @@ public class SMPlayer {
                     }
                     if (lastJumpLocation.getY() - player.getLocation().getY() >= 1.2) {
                         lastJumpLocation = player.getLocation();
-                        EffectUtils.playWallJumpSound(player, lastFacing);
+                        WallJumpUtil.playWallJumpSound(player, lastFacing);
                     }
                 }
             }
@@ -183,13 +228,13 @@ public class SMPlayer {
         //make the player fall | slide when the time runs out
         if (fallTask != null)
             fallTask.cancel();
-        fallTask = Bukkit.getScheduler().runTaskLaterAsynchronously(WallJump.getInstance(), () -> {
+        fallTask = Bukkit.getScheduler().runTaskLaterAsynchronously(manager.getPlugin(), () -> {
             if (onWall) {
                 if (config.getBoolean("slide")) {
                     velocityY = (float) -config.getDouble("slidingSpeed");
                     sliding = true;
                 } else {
-                    Bukkit.getScheduler().runTask(WallJump.getInstance(), (Runnable) this::onWallJumpEnd);
+                    Bukkit.getScheduler().runTask(manager.getPlugin(), (Runnable) this::onWallJumpEnd);
                 }
             }
         }, (long) (config.getDouble("timeOnWall") * 20));
