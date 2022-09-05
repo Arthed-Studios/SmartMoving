@@ -5,5 +5,10 @@ api-version: 1.14
 softdepend: [ PlaceholderAPI, WorldGuard ]
 authors: [ IPECTER ]
 description: SmartMoving Plugin
+permissions:
+  smartmoving.walljump.use:
+    default: true
+  smartmoving.crawling.use:
+    default: true
 commands:
   smartmoving:

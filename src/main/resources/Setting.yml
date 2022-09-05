@@ -15,7 +15,6 @@ locale: "EN"
 debug: false
 
 crawling:
-
   #HOLD - players will continue crawling as long as they keep shift pressed
   #HOLD - Shift 키를 오랫동안 누르고 있으면 엎드립니다
   #TOGGLE - players will start crawling and get up when they press shift
@@ -34,10 +33,58 @@ crawling:
   keys:
     - DOUBLE_SHIFT
 
-  blackList:
-
+  list:
+    #If false, It will work as WhiteList
+    #만약 false인 경우, 화이트리스트로 작동합니다
+    worldBlackList: true
     world:
       - disableWorld
-
+    blockBlackList: true
     block:
       - MAGMA_BLOCK
+
+wallJump:
+  requireDirectionChange: true
+  minimumDistance: 0.3
+  maximumVelocity: -1
+  maxJumps: 0
+  c: 0.6
+
+  jumpPower:
+    horizontal: 0.3
+    vertical: 0.5
+
+  slide:
+    enable: true
+    speed: 0.17
+    canJumpWhile: true
+
+  list:
+    #If false, It will work as WhiteList
+    #만약 false인 경우, 화이트리스트로 작동합니다
+    worldBlackList: true
+    world:
+      - disableWorld
+    blockBlackList: true
+    block:
+      - ICE
+      - BLUE_ICE
+      - PACKED_ICE
+      - GLASS
+      - WHITE_STAINED_GLASS
+      - ORANGE_STAINED_GLASS
+      - MAGENTA_STAINED_GLASS
+      - LIGHT_BLUE_STAINED_GLASS
+      - YELLOW_STAINED_GLASS
+      - LIME_STAINED_GLASS
+      - PINK_STAINED_GLASS
+      - GRAY_STAINED_GLASS
+      - LIGHT_GRAY_STAINED_GLASS
+      - CYAN_STAINED_GLASS
+      - PURPLE_STAINED_GLASS
+      - BLUE_STAINED_GLASS
+      - BROWN_STAINED_GLASS
+      - GREEN_STAINED_GLASS
+      - RED_STAINED_GLASS
+      - BLACK_STAINED_GLASS
+      - CACTUS

@@ -28,7 +28,7 @@ public class SmartMovingManager {
         return plugin;
     }
 
-    public SMPlayer addPlayer(Player player) {
+    public void addPlayer(Player player) {
         players.put(player, new SMPlayer(player));
     }
 
@@ -92,12 +92,11 @@ public class SmartMovingManager {
         SMPlayer smPlayer = players.get(player);
         if (smPlayer != null) {
             return smPlayer.isWallJumping();
-            return false;
         }
-
-        private static class InnerInstanceClass {
-            private static final SmartMovingManager instance = new SmartMovingManager();
-        }
-
-
+        return false;
     }
+
+    private static class InnerInstanceClass {
+        private static final SmartMovingManager instance = new SmartMovingManager();
+    }
+}

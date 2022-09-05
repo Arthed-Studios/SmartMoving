@@ -15,12 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class SmartMoving extends JavaPlugin {
+public class SmartMoving extends JavaPlugin {
 
     private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private VersionManager versionManager = RTUPluginLib.getVersionManager();
 
-    public final static void debug(String debugMessage) {
+    public void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
             SmartMoving.getPlugin(SmartMoving.class).getLogger().info(debugMessage);
         }
@@ -34,22 +34,30 @@ public final class SmartMoving extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        RTUPluginLib.init(this);
         loadDependencies();
     }
 
     @Override
     public void onEnable() {
-        RTUPluginLib.init(this);
-        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
-            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
-            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
-            Bukkit.getPluginManager().disablePlugin(this);
+        try {
+            if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
+                Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
+                Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
+            loadNMS();
+            registerEvent();
+            setExecutor();
+            ConfigManager.getInstance().initConfigFiles();
+            SmartMovingManager manager = SmartMovingManager.getInstance();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                manager.addPlayer(player);
+            }
+            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        loadNMS();
-        registerEvent();
-        setExecutor();
-        ConfigManager.getInstance().initConfigFiles();
-        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
     }
 
     private void clearBlock() {
@@ -66,10 +74,12 @@ public final class SmartMoving extends JavaPlugin {
 
     private void registerEvent() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJump(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerToggleSneak(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerToggleSwim(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDamage(), this);
 
     }
 

@@ -1,6 +1,5 @@
 package com.github.ipecter.smartmoving.listeners;
 
-import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +12,7 @@ public class PlayerDeath implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (smartMovingManager.isCrawling(e.getEntity())) {
-            SmartMoving.debug("Stop Crawling - Death");
+            SmartMovingManager.getInstance().getPlugin().getLogger().info("Stop Crawling - Death");
             smartMovingManager.stopCrawling(e.getEntity());
         }
 
