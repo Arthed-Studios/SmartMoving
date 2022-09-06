@@ -19,8 +19,8 @@ public class WallJumpUtil {
 
     public static boolean canWallJump(Player player) {
         WallJumpWallFace facing = getPlayerFacing(player);
-        SMPlayer smPlayer = new SMPlayer(player);
-        boolean onWall = smPlayer.isOnWall();
+        SMPlayer smPlayer = smartMovingManager.getPlayer(player);
+        boolean onWall = smPlayer.isWallJumping();
 
         int remainingJumps = smPlayer.getRemainingJumps();
         WallJumpWallFace lastFacing = smPlayer.getLastFacing();
@@ -38,7 +38,6 @@ public class WallJumpUtil {
                         (!player.hasPermission("smartmoving.walljump.use")) || //player does not have the permission to wall-jump
                         (worldGuard != null && !worldGuard.canWallJump(player)) //wall-jumping is not allowed in the region the player is in
         ) {
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("a1");
             return false;
         }
         //check if the block the player is wall jumping on is blacklisted
@@ -51,12 +50,6 @@ public class WallJumpUtil {
         boolean isBlockBlackListMode = config.isWallJumpBlockBlackList();
         if ((!isBlockBlackListMode && !onBlacklistedBlock) ||
                 (isBlockBlackListMode && onBlacklistedBlock)) {
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("a2" + onBlacklistedBlock + " / " + isBlockBlackListMode);
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("a2" + player.getLocation().clone().add(facing.xOffset,
-                    facing.yOffset,
-                    facing.zOffset)
-                    .getBlock()
-                    .getType().name() + " / " + config.getWallJumpBlockList());
             return false;
         }
 
@@ -67,7 +60,6 @@ public class WallJumpUtil {
         boolean isWorldBlackListMode = config.isWallJumpWorldBlackList();
         if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
                 (isWorldBlackListMode && inBlacklistedWorld)) {
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("a3");
             return false;
         }
         return true;
@@ -112,7 +104,7 @@ public class WallJumpUtil {
     }
 
     public static boolean isOnGround(Player player) {
-        return player.getLocation().clone().subtract(0, 0.2, 0).getBlock().getType().isSolid();
+        return player.getLocation().clone().subtract(0, 0.2, 0).getBlock().isSolid();
     }
 
     public static Block getBlockPlayerIsStuckOn(Player player, WallJumpWallFace facing) {

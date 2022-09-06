@@ -1,5 +1,6 @@
 package com.github.ipecter.smartmoving.listeners;
 
+import com.github.ipecter.smartmoving.SMPlayer;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,10 +14,12 @@ public class PlayerToggleSwim implements Listener {
 
     @EventHandler
     public void onEntityToggleSwim(EntityToggleSwimEvent e) {
-        if (!e.isSwimming() && e.getEntity() instanceof Player)
-            if (smartMovingManager.isCrawling((Player) e.getEntity())) {
+        if (!e.isSwimming() && e.getEntity() instanceof Player player) {
+            SMPlayer smPlayer = smartMovingManager.getPlayer(player);
+            if (smPlayer.isCrawling()) {
                 e.setCancelled(true);
             }
+        }
     }
 
 }

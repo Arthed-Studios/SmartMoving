@@ -1,7 +1,6 @@
 package com.github.ipecter.smartmoving.listeners;
 
 import com.github.ipecter.smartmoving.SMPlayer;
-import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.utils.CrawlingUtil;
@@ -30,57 +29,41 @@ public class PlayerToggleSneak implements Listener {
 
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent e) {
-        SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - Start");
         Player player = e.getPlayer();
         SMPlayer smPlayer = smartMovingManager.getPlayer(player);
         if (!player.isFlying()) {
-            if (smPlayer.isOnWall() && !e.isSneaking())
+            if (smPlayer.isWallJumping() && !e.isSneaking()) {
                 smPlayer.stopWallJump();
-            else if (WallJumpUtil.isTouchingAWall(player) && e.isSneaking() && !player.isOnGround())
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - WJ");
-            smPlayer.startWallJump();
+            } else if (WallJumpUtil.isTouchingAWall(player) && e.isSneaking() && !player.isOnGround()) {
+                smPlayer.startWallJump();
+            }
         }
         if (!CrawlingUtil.canCrawl(player)) {
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return1");
             return;
         }
         if (e.isSneaking()) {
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("Trigger Sneak");
-            if (smartMovingManager.isCrawling(player)) {
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("Stop Crawling - Sneak");
-                smartMovingManager.stopCrawling(player);
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return2");
+            if (smPlayer.isCrawling()) {
+                smPlayer.stopCrawling();
                 return;
             }
             if (smPlayer != null && smPlayer.toggleMode() != null && smPlayer.toggleMode() && config.getCrawlingModes().contains("TOGGLE")) {
                 Bukkit.getScheduler().runTask(plugin, smPlayer::stopCrawling);
-                SmartMoving.getPlugin(SmartMoving.class).getLogger().info("--------------------------");
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("Stop Crawling - Null1: " + smPlayer + " / " + smPlayer.toggleMode());
-                SmartMovingManager.getInstance().getPlugin().getLogger().info(config.getCrawlingModes().toString());
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return3");
-                SmartMoving.getPlugin(SmartMoving.class).getLogger().info("--------------------------");
                 return;
             }
 
             if (smPlayer == null && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
-                Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("Starat Crawling - 1");
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return4");
+                Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
                 return;
             }
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("Modes: " + config.getCrawlingModes());
-            SmartMovingManager.getInstance().getPlugin().getLogger().info("Keys: " + config.getCrawlingKeys());
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (CrawlingUtil.isInFrontOfATunnel(player)) {
-                    Bukkit.getScheduler().runTask(plugin, () -> smartMovingManager.startCrawling(player));
+                    Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         SMPlayer smPlayer1 = smartMovingManager.getPlayer(player);
                         if (smPlayer1 != null) {
                             smPlayer1.stopCrawling();
-                            SmartMovingManager.getInstance().getPlugin().getLogger().info("Stop Crawling - Null2");
                         }
                     }, 10);
-                    SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return5");
                     return;
                 }
             }
@@ -92,9 +75,8 @@ public class PlayerToggleSneak implements Listener {
                         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> doubleSneakingCheck.remove(player), 8);
                     } else {
                         doubleSneakingCheck.remove(player);
-                        smartMovingManager.startCrawling(player);
+                        smPlayer.startCrawling();
                     }
-                    SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return6");
                     return;
                 }
                 for (String startCrawling : config.getCrawlingKeys()) {
@@ -105,14 +87,12 @@ public class PlayerToggleSneak implements Listener {
                         }
                         holdCheck.remove(player);
                         long time = Long.parseLong(startCrawling.split("_")[1]);
-                        SmartMovingManager.getInstance().getPlugin().getLogger().info("HOLD_X " + String.valueOf(time));
                         holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
                             if (player.isSneaking() && player.getLocation().getPitch() > 85) {
-                                smartMovingManager.startCrawling(player);
+                                smPlayer.startCrawling();
                                 holdCheck.remove(player);
                             }
                         }, time * 20));
-                        SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - return7");
                         return;
                     }
                 }
@@ -121,9 +101,7 @@ public class PlayerToggleSneak implements Listener {
         } else {
             if (smPlayer != null && smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD")) {
                 smPlayer.stopCrawling();
-                SmartMovingManager.getInstance().getPlugin().getLogger().info("Stop Crawling - Else");
             }
         }
-        SmartMovingManager.getInstance().getPlugin().getLogger().info("ToggleSneak - End");
     }
 }

@@ -48,7 +48,7 @@ wallJump:
   minimumDistance: 0.3
   maximumVelocity: -1
   maxJumps: 0
-  c: 0.6
+  timeOnWall: 0.6
 
   jumpPower:
     horizontal: 0.3

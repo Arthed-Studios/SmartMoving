@@ -48,54 +48,6 @@ public class SmartMovingManager {
         return players.get(player);
     }
 
-    public void startCrawling(Player player) {
-        if (!players.containsKey(player)) {
-            SMPlayer smPlayer = new SMPlayer(player);
-            smPlayer.setCrawling(true);
-            players.put(player, smPlayer);
-        } else {
-            SMPlayer smPlayer = getPlayer(player);
-            smPlayer.setCrawling(true);
-            players.put(player, smPlayer);
-        }
-    }
-
-    public void stopCrawling(Player player) {
-        getPlayer(player).stopCrawling();
-    }
-
-    public boolean isCrawling(Player player) {
-        SMPlayer smPlayer = players.get(player);
-        if (smPlayer != null) {
-            return smPlayer.isCrawling();
-        }
-        return false;
-    }
-
-    public void startWallJump(Player player) {
-        if (!players.containsKey(player)) {
-            SMPlayer smPlayer = new SMPlayer(player);
-            smPlayer.setWallJumping(true);
-            players.put(player, smPlayer);
-        } else {
-            SMPlayer smPlayer = getPlayer(player);
-            smPlayer.setWallJumping(true);
-            players.put(player, smPlayer);
-        }
-    }
-
-    public void stopWallJump(Player player) {
-        getPlayer(player).stopWallJump();
-    }
-
-    public boolean isWallJumping(Player player) {
-        SMPlayer smPlayer = players.get(player);
-        if (smPlayer != null) {
-            return smPlayer.isWallJumping();
-        }
-        return false;
-    }
-
     private static class InnerInstanceClass {
         private static final SmartMovingManager instance = new SmartMovingManager();
     }

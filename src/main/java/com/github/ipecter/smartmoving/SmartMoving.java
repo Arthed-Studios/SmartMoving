@@ -40,24 +40,20 @@ public class SmartMoving extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        try {
-            if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
-                Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
-                Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
-                Bukkit.getPluginManager().disablePlugin(this);
-            }
-            loadNMS();
-            registerEvent();
-            setExecutor();
-            ConfigManager.getInstance().initConfigFiles();
-            SmartMovingManager manager = SmartMovingManager.getInstance();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                manager.addPlayer(player);
-            }
-            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
+            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
+            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
+            Bukkit.getPluginManager().disablePlugin(this);
         }
+        loadNMS();
+        registerEvent();
+        setExecutor();
+        ConfigManager.getInstance().initConfigFiles();
+        SmartMovingManager manager = SmartMovingManager.getInstance();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            manager.addPlayer(player);
+        }
+        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
     }
 
     private void clearBlock() {
@@ -80,6 +76,7 @@ public class SmartMoving extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerToggleSwim(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDamage(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerInteractBlock(), this);
 
     }
 
