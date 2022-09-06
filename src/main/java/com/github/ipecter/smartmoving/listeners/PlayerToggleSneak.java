@@ -46,10 +46,6 @@ public class PlayerToggleSneak implements Listener {
                 smPlayer.stopCrawling();
                 return;
             }
-            if (smPlayer != null && smPlayer.toggleMode() != null && smPlayer.toggleMode() && config.getCrawlingModes().contains("TOGGLE")) {
-                Bukkit.getScheduler().runTask(plugin, smPlayer::stopCrawling);
-                return;
-            }
 
             if (smPlayer == null && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
                 Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
@@ -63,7 +59,7 @@ public class PlayerToggleSneak implements Listener {
                         if (smPlayer1 != null) {
                             smPlayer1.stopCrawling();
                         }
-                    }, 10);
+                    }, 15);
                     return;
                 }
             }
@@ -80,7 +76,7 @@ public class PlayerToggleSneak implements Listener {
                     return;
                 }
                 for (String startCrawling : config.getCrawlingKeys()) {
-                    if (startCrawling.contains("HOLD")) {
+                    if (startCrawling.startsWith("HOLD")) {
                         BukkitTask bukkitTask = holdCheck.get(player);
                         if (bukkitTask != null) {
                             bukkitTask.cancel();
@@ -99,7 +95,7 @@ public class PlayerToggleSneak implements Listener {
             }
 
         } else {
-            if (smPlayer != null && smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD")) {
+            if (smPlayer != null && smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD") && smPlayer.isHoldCheck()) {
                 smPlayer.stopCrawling();
             }
         }

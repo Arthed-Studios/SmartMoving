@@ -33,6 +33,9 @@ public class SMPlayer {
 
     private BukkitTask canCrawlTask;
 
+    private BukkitTask holdCheckeTask;
+    private boolean holdCheck;
+
     //For Checking Player Non-Ground Time
     private int nonGround = 0;
 
@@ -66,6 +69,13 @@ public class SMPlayer {
         this.crawling = crawling;
     }
 
+    public boolean isHoldCheck() {
+        return holdCheck;
+    }
+
+    public void setHoldCheck(boolean holdCheck) {
+        this.holdCheck = holdCheck;
+    }
 
     public boolean isSliding() {
         return sliding;
@@ -98,7 +108,10 @@ public class SMPlayer {
         }
         barrierBlock = player.getLocation().getBlock();
         player.setSwimming(true);
-
+        holdCheck = false;
+        holdCheckeTask = Bukkit.getScheduler().runTaskLater(manager.getPlugin(), () -> {
+            holdCheck = true;
+        }, 10);
         moveTask = Bukkit.getScheduler().runTaskTimer(manager.getPlugin(), () -> {
             player.setSwimming(true);
             Block blockAbovePlayer = this.player.getLocation().add(0, 1.5, 0).getBlock();
@@ -155,14 +168,17 @@ public class SMPlayer {
         }
     }
 
-
     public void stopCrawling() {
         player.setSwimming(false);
-
         if (barrierBlock != null) {
             CrawlingUtil.revertBlockPacket(player, barrierBlock);
             CrawlingUtil.revertBlockPacket(player, barrierBlock.getLocation().subtract(0, 2, 0).getBlock());
             nmsPacketManager.removeFakeBlocks(player);
+        }
+
+        holdCheck = false;
+        if (holdCheckeTask != null) {
+            holdCheckeTask.cancel();
         }
 
         if (moveTask != null) {

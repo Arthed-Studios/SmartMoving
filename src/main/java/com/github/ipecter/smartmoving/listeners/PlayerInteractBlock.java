@@ -10,7 +10,7 @@ public class PlayerInteractBlock implements Listener {
 
     @EventHandler
     public void onInteractBlock(PlayerInteractEvent e) {
-        if (e.getClickedBlock().equals(e.getPlayer().getLocation().add(0, 1.5, 0).getBlock())) {
+        if (e.getClickedBlock() != null && e.getClickedBlock().equals(e.getPlayer().getLocation().add(0, 1.5, 0).getBlock())) {
             if (smartMovingManager.getPlayer(e.getPlayer()).isCrawling()) {
                 e.setCancelled(true);
             }
