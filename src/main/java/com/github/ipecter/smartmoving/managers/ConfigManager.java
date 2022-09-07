@@ -18,7 +18,7 @@ public class ConfigManager {
 
     //[ Crawling Part ]
     private List<String> crawlingModes = Collections.synchronizedList(new ArrayList<>());
-    private List<String> crawlingKeys = Collections.synchronizedList(new ArrayList<>());
+    private String crawlingKey;
     // blackList
     private boolean crawlingWorldBlackList;
     private boolean crawlingBlockBlackList;
@@ -38,6 +38,11 @@ public class ConfigManager {
     private boolean slideEnable;
     private double slideSpeed;
     private boolean slideCanJumpWhile;
+    // sound
+    private String namespace;
+    private String group;
+    private float volume;
+    private float pitch;
     // blackList
     private boolean wallJumpWorldBlackList;
     private boolean wallJumpBlockBlackList;
@@ -97,12 +102,12 @@ public class ConfigManager {
         this.crawlingModes = crawlingModes;
     }
 
-    public List<String> getCrawlingKeys() {
-        return crawlingKeys;
+    public String getCrawlingKey() {
+        return crawlingKey;
     }
 
-    public void setCrawlingKeys(List<String> crawlingKeys) {
-        this.crawlingKeys = crawlingKeys;
+    public void setCrawlingKey(String crawlingKey) {
+        this.crawlingKey = crawlingKey;
     }
 
     public List<String> getCrawlingBlockList() {
@@ -210,6 +215,38 @@ public class ConfigManager {
         this.slideCanJumpWhile = slideCanJumpWhile;
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
     public boolean isWallJumpWorldBlackList() {
         return wallJumpWorldBlackList;
     }
@@ -283,9 +320,8 @@ public class ConfigManager {
 
         //[ Crawling Part ]
         crawlingModes.clear();
-        crawlingKeys.clear();
         crawlingModes.addAll(config.getStringList("crawling.modes"));
-        crawlingKeys.addAll(config.getStringList("crawling.keys"));
+        crawlingKey = config.getString("crawling.keys", "DOUBLE_SHIFT");
         crawlingWorldBlackList = config.getBoolean("crawling.list.worldBlackList", true);
         crawlingBlockBlackList = config.getBoolean("crawling.list.blockBlackList", true);
         crawlingWorldList.clear();
@@ -298,14 +334,19 @@ public class ConfigManager {
         minimumDistance = config.getDouble("wallJump.minimumDistance", 0.3);
         maximumVelocity = config.getDouble("wallJump.maximumVelocity", -1);
         maxJump = config.getInt("wallJump.maxJump", 0);
-        timeOnWall = config.getDouble("timeOnWall", 0.6);
+        timeOnWall = config.getDouble("wallJump.timeOnWall", 0.6);
 
         jumpPowerHorizontal = config.getDouble("wallJump.jumpPower.horizontal", 0.3);
         jumpPowerVertical = config.getDouble("wallJump.jumpPower.vertical", 0.5);
 
-        slideEnable = config.getBoolean("slide.enable", true);
-        slideSpeed = config.getDouble("slide.speed", 0.17);
-        slideCanJumpWhile = config.getBoolean("slide.canJumpWhile", true);
+        slideEnable = config.getBoolean("wallJump.slide.enable", true);
+        slideSpeed = config.getDouble("wallJump.slide.speed", 0.17);
+        slideCanJumpWhile = config.getBoolean("wallJump.slide.canJumpWhile", true);
+
+        namespace = config.getString("wallJump.sound.namespace", "minecraft");
+        group = config.getString("wallJump.sound.group", "Step");
+        volume = (float) config.getDouble("wallJump.sound.volume", 1.0);
+        pitch = (float) config.getDouble("wallJump.sound.pitch", 1.0);
 
         wallJumpWorldList.clear();
         wallJumpBlockList.clear();

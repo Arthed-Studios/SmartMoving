@@ -1,12 +1,15 @@
 package com.github.ipecter.smartmoving.utils;
 
 import com.github.ipecter.smartmoving.SMPlayer;
+import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import com.github.ipecter.smartmoving.enums.WallJumpWallFace;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -81,9 +84,29 @@ public class WallJumpUtil {
     }
 
     public static void playWallJumpSound(Player player, WallJumpWallFace facing) {
+        SoundGroup soundGroup = getBlockPlayerIsStuckOn(player, facing).getBlockSoundGroup();
+        Sound sound = soundGroup.getStepSound();
+        switch (config.getGroup().toLowerCase()) {
+            case "step":
+                sound = soundGroup.getStepSound();
+                break;
+            case "break":
+                sound = soundGroup.getBreakSound();
+                break;
+            case "place":
+                sound = soundGroup.getPlaceSound();
+                break;
+            case "hit":
+                sound = soundGroup.getHitSound();
+                break;
+            case "fall":
+                sound = soundGroup.getFallSound();
+                break;
+        }
+        SmartMoving.debug("WallJump - Sound - " + config.getNamespace() + ":" + sound.getKey().getKey());
         player.getWorld().playSound(player.getLocation(),
-                getBlockPlayerIsStuckOn(player, facing).getBlockSoundGroup().getStepSound(),
-                1.0f, 1.0f);
+                config.getNamespace() + ":" + sound.getKey().getKey(),
+                1.0f, config.getPitch());
     }
 
     public static boolean isTouchingAWall(Player player) {

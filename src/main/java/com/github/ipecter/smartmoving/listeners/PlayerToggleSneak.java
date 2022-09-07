@@ -1,6 +1,7 @@
 package com.github.ipecter.smartmoving.listeners;
 
 import com.github.ipecter.smartmoving.SMPlayer;
+import com.github.ipecter.smartmoving.SmartMoving;
 import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.utils.CrawlingUtil;
@@ -39,63 +40,71 @@ public class PlayerToggleSneak implements Listener {
             }
         }
         if (!CrawlingUtil.canCrawl(player)) {
+            SmartMoving.debug("ToggleSneak - Crawling - Cancel (Return)");
             return;
         }
         if (e.isSneaking()) {
             if (smPlayer.isCrawling()) {
                 smPlayer.stopCrawling();
+                SmartMoving.debug("ToggleSneak - Crawling - Stop - Sneak - TOGGLE (Return)");
                 return;
             }
-
-            if (smPlayer == null && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
+            if (!smPlayer.isCrawling() && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
                 Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
                 return;
             }
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (CrawlingUtil.isInFrontOfATunnel(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
+                    SmartMoving.debug("ToggleSneak - Crawling - Start - TUNNELS");
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         SMPlayer smPlayer1 = smartMovingManager.getPlayer(player);
                         if (smPlayer1 != null) {
                             smPlayer1.stopCrawling();
+                            SmartMoving.debug("ToggleSneak - Crawling - Stop - TUNNELS");
                         }
                     }, 15);
+                    SmartMoving.debug("ToggleSneak - Crawling - TUNNELS (Return)");
                     return;
                 }
             }
 
             if (player.getLocation().getPitch() > 85) { // The player is looking downwards and is not crawling
-                if (config.getCrawlingKeys().contains("DOUBLE_SHIFT")) { //if double sneaking is enabled
+                if (config.getCrawlingKey().contains("DOUBLE_SHIFT")) { //if double sneaking is enabled
                     if (!doubleSneakingCheck.contains(player)) {
                         doubleSneakingCheck.add(player);
                         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> doubleSneakingCheck.remove(player), 8);
                     } else {
                         doubleSneakingCheck.remove(player);
+                        SmartMoving.debug("ToggleSneak - Crawling - Stop - DOUBLE_SHIFT");
                         smPlayer.startCrawling();
                     }
+                    SmartMoving.debug("ToggleSneak - Crawling - DOUBLE_SHIFT (Return)");
                     return;
                 }
-                for (String startCrawling : config.getCrawlingKeys()) {
-                    if (startCrawling.startsWith("HOLD")) {
-                        BukkitTask bukkitTask = holdCheck.get(player);
-                        if (bukkitTask != null) {
-                            bukkitTask.cancel();
-                        }
-                        holdCheck.remove(player);
-                        long time = Long.parseLong(startCrawling.split("_")[1]);
-                        holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            if (player.isSneaking() && player.getLocation().getPitch() > 85) {
-                                smPlayer.startCrawling();
-                                holdCheck.remove(player);
-                            }
-                        }, time * 20));
-                        return;
+                if (config.getCrawlingKey().startsWith("HOLD")) {
+                    BukkitTask bukkitTask = holdCheck.get(player);
+                    if (bukkitTask != null) {
+                        bukkitTask.cancel();
                     }
+                    holdCheck.remove(player);
+                    long time = Long.parseLong(config.getCrawlingKey().split("_")[1]);
+                    holdCheck.put(player, Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        if (player.isSneaking() && player.getLocation().getPitch() > 85) {
+                            SmartMoving.debug("ToggleSneak - Crawling - Stop - HOLD_X");
+                            smPlayer.startCrawling();
+                            holdCheck.remove(player);
+                        }
+                    }, time * 20));
+                    SmartMoving.debug("ToggleSneak - Crawling - HOLD_X (Return)");
+                    return;
                 }
+
             }
 
         } else {
-            if (smPlayer != null && smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD") && smPlayer.isHoldCheck()) {
+            if (smPlayer.toggleMode() != null && !smPlayer.toggleMode() && config.getCrawlingModes().contains("HOLD") && smPlayer.isHoldCheck()) {
+                SmartMoving.debug("ToggleSneak - Crawling - Stop - Sneak - HOLD (Return)");
                 smPlayer.stopCrawling();
             }
         }

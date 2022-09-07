@@ -20,9 +20,9 @@ public class SmartMoving extends JavaPlugin {
     private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private VersionManager versionManager = RTUPluginLib.getVersionManager();
 
-    public void debug(String debugMessage) {
+    public static final void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
-            SmartMoving.getPlugin(SmartMoving.class).getLogger().info(debugMessage);
+            System.out.println(debugMessage);
         }
     }
 
