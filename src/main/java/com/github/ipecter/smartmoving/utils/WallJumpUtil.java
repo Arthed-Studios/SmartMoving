@@ -106,7 +106,7 @@ public class WallJumpUtil {
         SmartMoving.debug("WallJump - Sound - " + config.getNamespace() + ":" + sound.getKey().getKey());
         player.getWorld().playSound(player.getLocation(),
                 config.getNamespace() + ":" + sound.getKey().getKey(),
-                1.0f, config.getPitch());
+                config.getVolume(), config.getPitch());
     }
 
     public static boolean isTouchingAWall(Player player) {
