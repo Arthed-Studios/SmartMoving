@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 public class CrawlingUtil {
 
+    private final static ConfigManager config = ConfigManager.getInstance();
     private static final Plugin plugin = SmartMoving.getPlugin(SmartMoving.class);
     private static final WorldGuard worldGuard = SmartMovingManager.getInstance().getWorldGuard();
     private static final ConfigManager configManager = ConfigManager.getInstance();
@@ -33,9 +34,9 @@ public class CrawlingUtil {
             if (!worldGuard.canCrawl(player))
                 return false;
         Block playerBelowBlock = player.getLocation().clone().subtract(0, 0.4, 0).getBlock();
-        boolean isOnBlacklistedBlock = configManager.getCrawlingBlockBlackList().contains(playerBelowBlock.getType().name().toUpperCase());
+        boolean isOnBlacklistedBlock = configManager.getCrawlingBlockList().contains(playerBelowBlock.getType().name().toUpperCase());
         if (isOnBlacklistedBlock) return false;
-        boolean isInBlacklistedWorld = configManager.getCrawlingWorldBlackList().contains(player.getWorld());
+        boolean isInBlacklistedWorld = configManager.getCrawlingWorldList().contains(player.getWorld());
         if (isInBlacklistedWorld) return false;
         return check(player);
     }
@@ -48,10 +49,20 @@ public class CrawlingUtil {
             if (!worldGuard.canCrawl(player))
                 return false;
         Block playerBelowBlock = player.getLocation().clone().subtract(0, 0.4, 0).getBlock();
-        boolean isOnBlacklistedBlock = configManager.getCrawlingBlockBlackList().contains(playerBelowBlock.getType().name().toUpperCase());
-        if (isOnBlacklistedBlock) return false;
-        boolean isInBlacklistedWorld = configManager.getCrawlingWorldBlackList().contains(player.getWorld());
-        if (isInBlacklistedWorld) return false;
+        boolean onBlacklistedBlock = config.getCrawlingBlockList().contains(
+                playerBelowBlock.getType().name());
+        boolean isBlockBlackListMode = config.isCrawlingBlockBlackList();
+        if ((!isBlockBlackListMode && !onBlacklistedBlock) ||
+                (isBlockBlackListMode && onBlacklistedBlock))
+            return false;
+        //check if the world the player is in is blacklisted
+        boolean inBlacklistedWorld = config.getCrawlingWorldList().contains(
+                player.getWorld());
+        boolean isWorldBlackListMode = config.isCrawlingWorldBlackList();
+        if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
+                (isWorldBlackListMode && inBlacklistedWorld))
+            return false;
+
         if (isOnGround(player)) return true;
         return check(player);
     }

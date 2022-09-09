@@ -28,6 +28,10 @@ public class SmartMovingManager {
         return plugin;
     }
 
+    public void addPlayer(Player player) {
+        players.put(player, new SMPlayer(player));
+    }
+
     public void removePlayer(Player player) {
         players.remove(player);
     }
@@ -40,28 +44,11 @@ public class SmartMovingManager {
         return this.worldGuard;
     }
 
-    public void startCrawling(Player player) {
-        if (!players.containsKey(player)) {
-            players.put(player, new SMPlayer(player));
-        }
-    }
-
-    public void stopCrawling(Player player) {
-        getPlayerCrawling(player).stopCrawling();
-        players.remove(player);
-    }
-
-    public boolean isCrawling(Player player) {
-        return players.containsKey(player);
-    }
-
-    public SMPlayer getPlayerCrawling(Player player) {
+    public SMPlayer getPlayer(Player player) {
         return players.get(player);
     }
 
     private static class InnerInstanceClass {
         private static final SmartMovingManager instance = new SmartMovingManager();
     }
-
-
 }

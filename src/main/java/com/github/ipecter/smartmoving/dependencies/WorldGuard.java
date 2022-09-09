@@ -1,6 +1,5 @@
 package com.github.ipecter.smartmoving.dependencies;
 
-import com.github.ipecter.smartmoving.SmartMovingManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.Association;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -21,21 +20,23 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 public class WorldGuard {
+
     public static StateFlag ALLOW_CRAWLING;
     public static StateFlag ALLOW_WALLJUMP;
-    private final Plugin owningPlugin = SmartMovingManager.getInstance().getPlugin();
-    private Object worldGuard = null;
-    private WorldGuardPlugin worldGuardPlugin = null;
-    private Object regionContainer = null;
-    private Method regionContainerGetMethod = null;
-    private Method worldAdaptMethod = null;
-    private Method regionManagerGetMethod = null;
-    private Constructor<?> vectorConstructor = null;
-    private Method vectorConstructorAsAMethodBecauseWhyNot = null;
+    private final Plugin owningPlugin;
+    private Object worldGuard;
+    private WorldGuardPlugin worldGuardPlugin;
+    private Object regionContainer;
+    private Method regionContainerGetMethod;
+    private Method worldAdaptMethod;
+    private Method regionManagerGetMethod;
+    private Constructor<?> vectorConstructor;
+    private Method vectorConstructorAsAMethodBecauseWhyNot;
     private boolean initialized = false;
 
 
     public WorldGuard(Plugin plugin, Plugin owningPlugin) {
+        this.owningPlugin = owningPlugin;
         if (plugin instanceof WorldGuardPlugin) {
             worldGuardPlugin = (WorldGuardPlugin) plugin;
 
@@ -49,9 +50,8 @@ public class WorldGuard {
             }
 
             try {
-                owningPlugin.getLogger().info("Pre-check for WorldGuard custom flag registration");
                 registerFlag();
-                // registerFlag();
+                owningPlugin.getLogger().info("Pre-check for WorldGuard custom flag registration");
             } catch (NoSuchMethodError incompatible) {
                 owningPlugin.getLogger().log(Level.WARNING, "NOFLAGS", incompatible);
                 // Ignored, will follow up in checkFlagSupport
@@ -60,11 +60,6 @@ public class WorldGuard {
             }
         }
     }
-
-    public boolean isEnabled() {
-        return worldGuardPlugin != null;
-    }
-
     protected RegionAssociable getAssociable(Player player) {
         RegionAssociable associable;
         if (player == null) {
@@ -76,8 +71,8 @@ public class WorldGuard {
         return associable;
     }
 
-    private void registerFlag() {
-        FlagRegistry registry = null;
+    public final void registerFlag() {
+        FlagRegistry registry;
         try {
             Method getFlagRegistryMethod = worldGuard.getClass().getMethod("getFlagRegistry");
             registry = (FlagRegistry) getFlagRegistryMethod.invoke(worldGuard);
@@ -95,7 +90,7 @@ public class WorldGuard {
                 }
                 Flag<?> wallJumpExisting = registry.get("walljump");
                 if (wallJumpExisting instanceof StateFlag) {
-                    ALLOW_CRAWLING = (StateFlag) wallJumpExisting;
+                    ALLOW_WALLJUMP = (StateFlag) wallJumpExisting;
                 }
             }
         } catch (Exception ex) {
@@ -207,8 +202,6 @@ public class WorldGuard {
         if (worldGuardPlugin == null) return true;
 
         ApplicableRegionSet checkSet = getRegionSet(location);
-        if (checkSet == null) return true;
-
         return checkSet.queryState(getAssociable(player), ALLOW_WALLJUMP) != StateFlag.State.DENY;
     }
 

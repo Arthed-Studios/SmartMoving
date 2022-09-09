@@ -1,6 +1,6 @@
 package com.github.ipecter.smartmoving.managers;
 
-import com.github.ipecter.rtu.utilapi.RTUUtilAPI;
+import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -15,10 +15,40 @@ public class ConfigManager {
     private String locale = "EN";
     private String prefix = IridiumColorAPI.process("<GRADIENT:47cc1f>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private Map<String, String> msgKeyMap = Collections.synchronizedMap(new HashMap<>());
+
+    //[ Crawling Part ]
     private List<String> crawlingModes = Collections.synchronizedList(new ArrayList<>());
-    private List<String> crawlingKeys = Collections.synchronizedList(new ArrayList<>());
-    private List<String> crawlingBlockBlackList = Collections.synchronizedList(new ArrayList<>());
-    private List<String> crawlingWorldBlackList = Collections.synchronizedList(new ArrayList<>());
+    private String crawlingKey;
+    // blackList
+    private boolean crawlingWorldBlackList;
+    private boolean crawlingBlockBlackList;
+    private List<String> crawlingBlockList = Collections.synchronizedList(new ArrayList<>());
+    private List<String> crawlingWorldList = Collections.synchronizedList(new ArrayList<>());
+
+    //[ WallJump Part ]
+    private boolean requireDirectionChange;
+    private double minimumDistance;
+    private double maximumVelocity;
+    private int maxJump;
+    private double timeOnWall;
+    // jumpPower
+    private double jumpPowerHorizontal;
+    private double jumpPowerVertical;
+    // slide
+    private boolean slideEnable;
+    private double slideSpeed;
+    private boolean slideCanJumpWhile;
+    // sound
+    private String namespace;
+    private String group;
+    private float volume;
+    private float pitch;
+    // blackList
+    private boolean wallJumpWorldBlackList;
+    private boolean wallJumpBlockBlackList;
+    private List<String> wallJumpBlockList = Collections.synchronizedList(new ArrayList<>());
+    private List<String> wallJumpWorldList = Collections.synchronizedList(new ArrayList<>());
+
 
     public boolean isEnablePlugin() {
         return enablePlugin;
@@ -63,6 +93,7 @@ public class ConfigManager {
         return InnerInstanceClass.instance;
     }
 
+    //[ Crawling Part ]
     public List<String> getCrawlingModes() {
         return crawlingModes;
     }
@@ -71,33 +102,194 @@ public class ConfigManager {
         this.crawlingModes = crawlingModes;
     }
 
-    public List<String> getCrawlingKeys() {
-        return crawlingKeys;
+    public String getCrawlingKey() {
+        return crawlingKey;
     }
 
-    public void setCrawlingKeys(List<String> crawlingKeys) {
-        this.crawlingKeys = crawlingKeys;
+    public void setCrawlingKey(String crawlingKey) {
+        this.crawlingKey = crawlingKey;
     }
 
-    public List<String> getCrawlingBlockBlackList() {
-        return crawlingBlockBlackList;
+    public List<String> getCrawlingBlockList() {
+        return crawlingBlockList;
     }
 
-    public void setCrawlingBlockBlackList(List<String> crawlingBlockBlackList) {
-        this.crawlingBlockBlackList = crawlingBlockBlackList;
+    public void setCrawlingBlockList(List<String> crawlingBlockList) {
+        this.crawlingBlockList = crawlingBlockList;
     }
 
-    public void initConfigFiles() {
-        initSetting(RTUUtilAPI.getFileManager().copyResource("Setting.yml"));
-        initMessage(RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
-    }
-
-    public List<String> getCrawlingWorldBlackList() {
+    public boolean isCrawlingWorldBlackList() {
         return crawlingWorldBlackList;
     }
 
-    public void setCrawlingWorldBlackList(List<String> crawlingWorldBlackList) {
+    public void setCrawlingWorldBlackList(boolean crawlingWorldBlackList) {
         this.crawlingWorldBlackList = crawlingWorldBlackList;
+    }
+
+    public boolean isCrawlingBlockBlackList() {
+        return crawlingWorldBlackList;
+    }
+
+    public void setCrawlingBlockBlackList(boolean crawlingJumpBlockBlackList) {
+        this.crawlingBlockBlackList = crawlingBlockBlackList;
+    }
+
+    //[ WallJump Part ]
+    public boolean isRequireDirectionChange() {
+        return requireDirectionChange;
+    }
+
+    public void setRequireDirectionChange(boolean requireDirectionChange) {
+        this.requireDirectionChange = requireDirectionChange;
+    }
+
+    public double getMinimumDistance() {
+        return minimumDistance;
+    }
+
+    public void setMinimumDistance(double minimumDistance) {
+        this.minimumDistance = minimumDistance;
+    }
+
+    public double getMaximumVelocity() {
+        return maximumVelocity;
+    }
+
+    public void setMaximumVelocity(double maximumVelocity) {
+        this.maximumVelocity = maximumVelocity;
+    }
+
+    public int getMaxJump() {
+        return maxJump;
+    }
+
+    public void setMaxJump(int maxJump) {
+        this.maxJump = maxJump;
+    }
+
+    public double getTimeOnWall() {
+        return timeOnWall;
+    }
+
+    public void setTimeOnWall(double timeOnWall) {
+        this.timeOnWall = timeOnWall;
+    }
+
+    public double getJumpPowerHorizontal() {
+        return jumpPowerHorizontal;
+    }
+
+    public void setJumpPowerHorizontal(double jumpPowerHorizontal) {
+        this.jumpPowerHorizontal = jumpPowerHorizontal;
+    }
+
+    public double getJumpPowerVertical() {
+        return jumpPowerVertical;
+    }
+
+    public void setJumpPowerVertical(double jumpPowerVertical) {
+        this.jumpPowerVertical = jumpPowerVertical;
+    }
+
+    public boolean isSlideEnable() {
+        return slideEnable;
+    }
+
+    public void setSlideEnable(boolean slideEnable) {
+        this.slideEnable = slideEnable;
+    }
+
+    public double getSlideSpeed() {
+        return slideSpeed;
+    }
+
+    public void setSlideSpeed(double slideSpeed) {
+        this.slideSpeed = slideSpeed;
+    }
+
+    public boolean isSlideCanJumpWhile() {
+        return slideCanJumpWhile;
+    }
+
+    public void setSlideCanJumpWhile(boolean slideCanJumpWhile) {
+        this.slideCanJumpWhile = slideCanJumpWhile;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public boolean isWallJumpWorldBlackList() {
+        return wallJumpWorldBlackList;
+    }
+
+    public void setWallJumpWorldBlackList(boolean wallJumpWorldBlackList) {
+        this.wallJumpWorldBlackList = wallJumpWorldBlackList;
+    }
+
+    public boolean isWallJumpBlockBlackList() {
+        return wallJumpWorldBlackList;
+    }
+
+    public void setWallJumpBlockBlackList(boolean wallJumpBlockBlackList) {
+        this.wallJumpBlockBlackList = wallJumpBlockBlackList;
+    }
+
+    public List<String> getWallJumpBlockList() {
+        return wallJumpBlockList;
+    }
+
+    public void setWallJumpBlockList(List<String> wallJumpBlockList) {
+        this.wallJumpBlockList = wallJumpBlockList;
+    }
+
+    public List<String> getWallJumpWorldList() {
+        return wallJumpWorldList;
+    }
+
+    public void setWallJumpWorldList(List<String> wallJumpWorldList) {
+        this.wallJumpWorldList = wallJumpWorldList;
+    }
+
+    public void initConfigFiles() {
+        initSetting(RTUPluginLib.getFileManager().copyResource("Setting.yml"));
+        initMessage(RTUPluginLib.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
+    }
+
+    public List<String> getCrawlingWorldList() {
+        return crawlingWorldList;
+    }
+
+    public void setCrawlingWorldList(List<String> crawlingWorldList) {
+        this.crawlingWorldList = crawlingWorldList;
     }
 
     private void initMessage(File file) {
@@ -109,8 +301,8 @@ public class ConfigManager {
                 msgKeyMap.put(key, config.getString(key));
             }
         }
-        RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_EN.yml");
-        RTUUtilAPI.getFileManager().copyResource("Translations", "Locale_KR.yml");
+        RTUPluginLib.getFileManager().copyResource("Translations", "Locale_EN.yml");
+        RTUPluginLib.getFileManager().copyResource("Translations", "Locale_KR.yml");
     }
 
     private void initSetting(File file) {
@@ -125,14 +317,44 @@ public class ConfigManager {
     }
 
     private void initCrawling(YamlConfiguration config) {
+
+        //[ Crawling Part ]
         crawlingModes.clear();
-        crawlingKeys.clear();
-        crawlingWorldBlackList.clear();
-        crawlingBlockBlackList.clear();
         crawlingModes.addAll(config.getStringList("crawling.modes"));
-        crawlingKeys.addAll(config.getStringList("crawling.keys"));
-        crawlingWorldBlackList.addAll(config.getStringList("crawling.blackList.worlds"));
-        crawlingBlockBlackList.addAll(config.getStringList("crawling.blackList.blocks"));
+        crawlingKey = config.getString("crawling.keys", "DOUBLE_SHIFT");
+        crawlingWorldBlackList = config.getBoolean("crawling.list.worldBlackList", true);
+        crawlingBlockBlackList = config.getBoolean("crawling.list.blockBlackList", true);
+        crawlingWorldList.clear();
+        crawlingBlockList.clear();
+        crawlingWorldList.addAll(config.getStringList("crawling.list.worlds"));
+        crawlingBlockList.addAll(config.getStringList("crawling.list.blocks"));
+
+        //[ WallJump Part ]
+        requireDirectionChange = config.getBoolean("wallJump.requireDirectionChange", true);
+        minimumDistance = config.getDouble("wallJump.minimumDistance", 0.3);
+        maximumVelocity = config.getDouble("wallJump.maximumVelocity", -1);
+        maxJump = config.getInt("wallJump.maxJump", 0);
+        timeOnWall = config.getDouble("wallJump.timeOnWall", 0.6);
+
+        jumpPowerHorizontal = config.getDouble("wallJump.jumpPower.horizontal", 0.3);
+        jumpPowerVertical = config.getDouble("wallJump.jumpPower.vertical", 0.5);
+
+        slideEnable = config.getBoolean("wallJump.slide.enable", true);
+        slideSpeed = config.getDouble("wallJump.slide.speed", 0.17);
+        slideCanJumpWhile = config.getBoolean("wallJump.slide.canJumpWhile", true);
+
+        namespace = config.getString("wallJump.sound.namespace", "minecraft");
+        group = config.getString("wallJump.sound.group", "Step");
+        volume = (float) config.getDouble("wallJump.sound.volume", 1.0);
+        pitch = (float) config.getDouble("wallJump.sound.pitch", 1.0);
+
+        wallJumpWorldList.clear();
+        wallJumpBlockList.clear();
+        wallJumpWorldBlackList = config.getBoolean("wallJump.list.worldBlackList", true);
+        wallJumpBlockBlackList = config.getBoolean("wallJump.list.blockBlackList", true);
+        wallJumpWorldList.addAll(config.getStringList("wallJump.list.worlds"));
+        wallJumpBlockList.addAll(config.getStringList("wallJump.list.blocks"));
+
     }
 
     private static class InnerInstanceClass {
