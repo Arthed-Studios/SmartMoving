@@ -30,6 +30,7 @@ public class PlayerToggleSneak implements Listener {
 
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent e) {
+        if (!config.isEnablePlugin()) return;
         Player player = e.getPlayer();
         SMPlayer smPlayer = smartMovingManager.getPlayer(player);
         if (!player.isFlying()) {

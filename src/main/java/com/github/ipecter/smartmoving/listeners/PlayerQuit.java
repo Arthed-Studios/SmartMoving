@@ -8,12 +8,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuit implements Listener {
 
-    private final ConfigManager configManager = ConfigManager.getInstance();
+    private final ConfigManager config = ConfigManager.getInstance();
     private final SmartMovingManager smartMovingManager = SmartMovingManager.getInstance();
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        if (!configManager.isEnablePlugin()) return;
+        if (!config.isEnablePlugin()) return;
         smartMovingManager.removePlayer(e.getPlayer());
     }
 }
