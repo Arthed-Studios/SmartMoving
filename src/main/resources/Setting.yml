@@ -14,6 +14,8 @@ locale: "EN"
 #개발 전용
 debug: false
 
+#Permission(Default=true): smartmoving.crawling.use
+#권한(기본값=true): smartmoving.crawling.use
 crawling:
   #HOLD - players will continue crawling as long as they keep shift pressed
   #HOLD - Shift 키를 오랫동안 누르고 있으면 엎드립니다
@@ -42,6 +44,8 @@ crawling:
     blocks:
       - MAGMA_BLOCK
 
+#Permission(Default=true): smartmoving.walljump.use
+#권한(기본값=true): smartmoving.walljump.use
 wallJump:
   requireDirectionChange: true
   minimumDistance: 0.3
