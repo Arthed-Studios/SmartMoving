@@ -30,6 +30,10 @@ public class SmartMoving extends JavaPlugin {
     public void onDisable() {
         clearBlock();
         Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cDisable&f!"));
+        SmartMovingManager manager = SmartMovingManager.getInstance();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            manager.removePlayer(player);
+        }
     }
 
     @Override
