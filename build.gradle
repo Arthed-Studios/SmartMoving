@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.github.ipecter'
-version = '1.0.0'
+version = '1.0.1'
 
 ConfigurableFileTree libsImplementation = fileTree(dir: 'libs-implementation', include: ['*.jar'])
 
