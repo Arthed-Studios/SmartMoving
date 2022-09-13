@@ -49,17 +49,15 @@ public class WallJumpUtil {
                         facing.yOffset,
                         facing.zOffset)
                         .getBlock()
-                        .getType().name());
+                        .getType().name().toUpperCase());
         boolean isBlockBlackListMode = config.isWallJumpBlockBlackList();
         if ((!isBlockBlackListMode && !onBlacklistedBlock) ||
                 (isBlockBlackListMode && onBlacklistedBlock)) {
             return false;
         }
-
-
         //check if the world the player is in is blacklisted
         boolean inBlacklistedWorld = config.getWallJumpWorldList().contains(
-                player.getWorld());
+                player.getWorld().getName());
         boolean isWorldBlackListMode = config.isWallJumpWorldBlackList();
         if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
                 (isWorldBlackListMode && inBlacklistedWorld)) {

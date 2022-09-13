@@ -34,10 +34,19 @@ public class CrawlingUtil {
             if (!worldGuard.canCrawl(player))
                 return false;
         Block playerBelowBlock = player.getLocation().clone().subtract(0, 0.4, 0).getBlock();
-        boolean isOnBlacklistedBlock = configManager.getCrawlingBlockList().contains(playerBelowBlock.getType().name().toUpperCase());
-        if (isOnBlacklistedBlock) return false;
-        boolean isInBlacklistedWorld = configManager.getCrawlingWorldList().contains(player.getWorld());
-        if (isInBlacklistedWorld) return false;
+        boolean onBlacklistedBlock = config.getCrawlingBlockList().contains(
+                playerBelowBlock.getType().name().toUpperCase());
+        boolean isBlockBlackListMode = config.isCrawlingBlockBlackList();
+        if ((!isBlockBlackListMode && !onBlacklistedBlock) ||
+                (isBlockBlackListMode && onBlacklistedBlock))
+            return false;
+        //check if the world the player is in is blacklisted
+        boolean inBlacklistedWorld = config.getCrawlingWorldList().contains(
+                player.getWorld().getName());
+        boolean isWorldBlackListMode = config.isCrawlingWorldBlackList();
+        if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
+                (isWorldBlackListMode && inBlacklistedWorld))
+            return false;
         return check(player);
     }
 
@@ -50,14 +59,14 @@ public class CrawlingUtil {
                 return false;
         Block playerBelowBlock = player.getLocation().clone().subtract(0, 0.4, 0).getBlock();
         boolean onBlacklistedBlock = config.getCrawlingBlockList().contains(
-                playerBelowBlock.getType().name());
+                playerBelowBlock.getType().name().toUpperCase());
         boolean isBlockBlackListMode = config.isCrawlingBlockBlackList();
         if ((!isBlockBlackListMode && !onBlacklistedBlock) ||
                 (isBlockBlackListMode && onBlacklistedBlock))
             return false;
         //check if the world the player is in is blacklisted
         boolean inBlacklistedWorld = config.getCrawlingWorldList().contains(
-                player.getWorld());
+                player.getWorld().getName());
         boolean isWorldBlackListMode = config.isCrawlingWorldBlackList();
         if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
                 (isWorldBlackListMode && inBlacklistedWorld))

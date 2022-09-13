@@ -36,10 +36,10 @@ crawling:
     #If false, It will work as WhiteList
     #만약 false인 경우, 화이트리스트로 작동합니다
     worldBlackList: true
-    world:
+    worlds:
       - disableWorld
     blockBlackList: true
-    block:
+    blocks:
       - MAGMA_BLOCK
 
 wallJump:
@@ -69,10 +69,10 @@ wallJump:
     #If false, It will work as WhiteList
     #만약 false인 경우, 화이트리스트로 작동합니다
     worldBlackList: true
-    world:
+    worlds:
       - disableWorld
     blockBlackList: true
-    block:
+    blocks:
       - ICE
       - BLUE_ICE
       - PACKED_ICE
