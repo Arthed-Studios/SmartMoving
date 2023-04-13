@@ -1,25 +1,4 @@
-plugins {
-    id 'application'
-    id 'java'
-}
-
-group = 'com.github.ipecter'
-
-sourceCompatibility = 11
-targetCompatibility = 11
-
-repositories {
-    maven {
-        name = 'codemc-repo'
-        url = 'https://repo.codemc.org/repository/nms/'
-    }
-}
-
 dependencies {
     compileOnly 'org.spigotmc:spigot:1.17.1-R0.1-SNAPSHOT'
     implementation project(':NMS')
-}
-
-task prepareKotlinBuildScriptModel {
-
 }

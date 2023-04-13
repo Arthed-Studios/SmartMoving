@@ -60,6 +60,7 @@ public class WorldGuard {
             }
         }
     }
+
     protected RegionAssociable getAssociable(Player player) {
         RegionAssociable associable;
         if (player == null) {

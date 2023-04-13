@@ -46,8 +46,8 @@ public class WallJumpUtil {
         //check if the block the player is wall jumping on is blacklisted
         boolean onBlacklistedBlock = config.getWallJumpBlockList().contains(
                 player.getLocation().clone().add(facing.xOffset,
-                        facing.yOffset,
-                        facing.zOffset)
+                                facing.yOffset,
+                                facing.zOffset)
                         .getBlock()
                         .getType().name().toUpperCase());
         boolean isBlockBlackListMode = config.isWallJumpBlockBlackList();
@@ -59,11 +59,8 @@ public class WallJumpUtil {
         boolean inBlacklistedWorld = config.getWallJumpWorldList().contains(
                 player.getWorld().getName());
         boolean isWorldBlackListMode = config.isWallJumpWorldBlackList();
-        if ((!isWorldBlackListMode && !inBlacklistedWorld) ||
-                (isWorldBlackListMode && inBlacklistedWorld)) {
-            return false;
-        }
-        return true;
+        return (isWorldBlackListMode || inBlacklistedWorld) &&
+                (!isWorldBlackListMode || !inBlacklistedWorld);
     }
 
     public static void spawnSlidingParticles(Player player, int count, WallJumpWallFace facing) {

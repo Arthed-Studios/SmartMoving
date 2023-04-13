@@ -110,8 +110,7 @@ public class CrawlingUtil {
     public static boolean checkAbove(Block block) {
         if (block.getType().isAir()) return true;
         if (block.isSolid()) return false;
-        if (block.isLiquid()) return false;
-        return true;
+        return !block.isLiquid();
     }
 
     public static boolean checkLeg(Block block) {
@@ -119,8 +118,7 @@ public class CrawlingUtil {
         if (block.isSolid()) return true;
         if (block.isPassable()) return true;
         if (block.isCollidable()) return false;
-        if (block.isLiquid()) return false;
-        return true;
+        return !block.isLiquid();
     }
 
     public static boolean isInFrontOfATunnel(Player player) {

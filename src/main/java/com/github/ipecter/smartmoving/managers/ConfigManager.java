@@ -1,25 +1,29 @@
 package com.github.ipecter.smartmoving.managers;
 
 import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
-import com.iridium.iridiumcolorapi.IridiumColorAPI;
+import com.github.ipecter.smartmoving.SmartMoving;
+import lombok.Getter;
+import lombok.Setter;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.*;
 
+@Getter
+@Setter
 public class ConfigManager {
 
     private boolean enablePlugin = true;
     private boolean motd = true;
     private boolean debug = false;
     private String locale = "EN";
-    private String prefix = IridiumColorAPI.process("<GRADIENT:47cc1f>[ SmartMoving ]</GRADIENT:a3a3a3> ");
     private Map<String, String> msgKeyMap = Collections.synchronizedMap(new HashMap<>());
 
     //[ Crawling Part ]
     private List<String> crawlingModes = Collections.synchronizedList(new ArrayList<>());
     private String crawlingKey;
-    // blackList
+    // blackListsz
     private boolean crawlingWorldBlackList;
     private boolean crawlingBlockBlackList;
     private List<String> crawlingBlockList = Collections.synchronizedList(new ArrayList<>());
@@ -49,234 +53,12 @@ public class ConfigManager {
     private List<String> wallJumpBlockList = Collections.synchronizedList(new ArrayList<>());
     private List<String> wallJumpWorldList = Collections.synchronizedList(new ArrayList<>());
 
-
-    public boolean isEnablePlugin() {
-        return enablePlugin;
-    }
-
-    public void setEnablePlugin(boolean enablePlugin) {
-        this.enablePlugin = enablePlugin;
-    }
-
-    public boolean isMotd() {
-        return motd;
-    }
-
-    public void setMotd(boolean motd) {
-        this.motd = motd;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean motd) {
-        this.debug = debug;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public String getTranslation(String key) {
-        return msgKeyMap.getOrDefault(key, "");
-    }
-
-    public ConfigManager() {
-    }
-
     public final static ConfigManager getInstance() {
         return InnerInstanceClass.instance;
     }
 
-    //[ Crawling Part ]
-    public List<String> getCrawlingModes() {
-        return crawlingModes;
-    }
-
-    public void setCrawlingModes(List<String> crawlingModes) {
-        this.crawlingModes = crawlingModes;
-    }
-
-    public String getCrawlingKey() {
-        return crawlingKey;
-    }
-
-    public void setCrawlingKey(String crawlingKey) {
-        this.crawlingKey = crawlingKey;
-    }
-
-    public List<String> getCrawlingBlockList() {
-        return crawlingBlockList;
-    }
-
-    public void setCrawlingBlockList(List<String> crawlingBlockList) {
-        this.crawlingBlockList = crawlingBlockList;
-    }
-
-    public boolean isCrawlingWorldBlackList() {
-        return crawlingWorldBlackList;
-    }
-
-    public void setCrawlingWorldBlackList(boolean crawlingWorldBlackList) {
-        this.crawlingWorldBlackList = crawlingWorldBlackList;
-    }
-
-    public boolean isCrawlingBlockBlackList() {
-        return crawlingWorldBlackList;
-    }
-
-    public void setCrawlingBlockBlackList(boolean crawlingJumpBlockBlackList) {
-        this.crawlingBlockBlackList = crawlingBlockBlackList;
-    }
-
-    //[ WallJump Part ]
-    public boolean isRequireDirectionChange() {
-        return requireDirectionChange;
-    }
-
-    public void setRequireDirectionChange(boolean requireDirectionChange) {
-        this.requireDirectionChange = requireDirectionChange;
-    }
-
-    public double getMinimumDistance() {
-        return minimumDistance;
-    }
-
-    public void setMinimumDistance(double minimumDistance) {
-        this.minimumDistance = minimumDistance;
-    }
-
-    public double getMaximumVelocity() {
-        return maximumVelocity;
-    }
-
-    public void setMaximumVelocity(double maximumVelocity) {
-        this.maximumVelocity = maximumVelocity;
-    }
-
-    public int getMaxJump() {
-        return maxJump;
-    }
-
-    public void setMaxJump(int maxJump) {
-        this.maxJump = maxJump;
-    }
-
-    public double getTimeOnWall() {
-        return timeOnWall;
-    }
-
-    public void setTimeOnWall(double timeOnWall) {
-        this.timeOnWall = timeOnWall;
-    }
-
-    public double getJumpPowerHorizontal() {
-        return jumpPowerHorizontal;
-    }
-
-    public void setJumpPowerHorizontal(double jumpPowerHorizontal) {
-        this.jumpPowerHorizontal = jumpPowerHorizontal;
-    }
-
-    public double getJumpPowerVertical() {
-        return jumpPowerVertical;
-    }
-
-    public void setJumpPowerVertical(double jumpPowerVertical) {
-        this.jumpPowerVertical = jumpPowerVertical;
-    }
-
-    public boolean isSlideEnable() {
-        return slideEnable;
-    }
-
-    public void setSlideEnable(boolean slideEnable) {
-        this.slideEnable = slideEnable;
-    }
-
-    public double getSlideSpeed() {
-        return slideSpeed;
-    }
-
-    public void setSlideSpeed(double slideSpeed) {
-        this.slideSpeed = slideSpeed;
-    }
-
-    public boolean isSlideCanJumpWhile() {
-        return slideCanJumpWhile;
-    }
-
-    public void setSlideCanJumpWhile(boolean slideCanJumpWhile) {
-        this.slideCanJumpWhile = slideCanJumpWhile;
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public float getVolume() {
-        return volume;
-    }
-
-    public void setVolume(float volume) {
-        this.volume = volume;
-    }
-
-    public float getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
-    }
-
-    public boolean isWallJumpWorldBlackList() {
-        return wallJumpWorldBlackList;
-    }
-
-    public void setWallJumpWorldBlackList(boolean wallJumpWorldBlackList) {
-        this.wallJumpWorldBlackList = wallJumpWorldBlackList;
-    }
-
-    public boolean isWallJumpBlockBlackList() {
-        return wallJumpWorldBlackList;
-    }
-
-    public void setWallJumpBlockBlackList(boolean wallJumpBlockBlackList) {
-        this.wallJumpBlockBlackList = wallJumpBlockBlackList;
-    }
-
-    public List<String> getWallJumpBlockList() {
-        return wallJumpBlockList;
-    }
-
-    public void setWallJumpBlockList(List<String> wallJumpBlockList) {
-        this.wallJumpBlockList = wallJumpBlockList;
-    }
-
-    public List<String> getWallJumpWorldList() {
-        return wallJumpWorldList;
-    }
-
-    public void setWallJumpWorldList(List<String> wallJumpWorldList) {
-        this.wallJumpWorldList = wallJumpWorldList;
+    public String getTranslation(String key) {
+        return msgKeyMap.getOrDefault(key, "");
     }
 
     public void initConfigFiles() {
@@ -284,19 +66,12 @@ public class ConfigManager {
         initMessage(RTUPluginLib.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
     }
 
-    public List<String> getCrawlingWorldList() {
-        return crawlingWorldList;
-    }
-
-    public void setCrawlingWorldList(List<String> crawlingWorldList) {
-        this.crawlingWorldList = crawlingWorldList;
-    }
-
     private void initMessage(File file) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         for (String key : config.getKeys(false)) {
             if (key.equals("prefix")) {
-                msgKeyMap.put(key, config.getString("prefix", "").isEmpty() ? prefix : config.getString("prefix"));
+                String prefixText = config.getString("prefix", "");
+                msgKeyMap.put(key, prefixText.isEmpty() ? MiniMessage.miniMessage().serialize(SmartMoving.prefix) : prefixText);
             } else {
                 msgKeyMap.put(key, config.getString(key));
             }
@@ -312,11 +87,11 @@ public class ConfigManager {
         locale = config.getString("locale");
         debug = config.getBoolean("debug");
 
-        initCrawling(config);
+        initConfig(config);
 
     }
 
-    private void initCrawling(YamlConfiguration config) {
+    private void initConfig(YamlConfiguration config) {
 
         //[ Crawling Part ]
         crawlingModes.clear();

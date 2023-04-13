@@ -51,12 +51,12 @@ public class PlayerToggleSneak implements Listener {
                 return;
             }
             if (!smPlayer.isCrawling() && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
-                Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
+                Bukkit.getScheduler().runTask(plugin, smPlayer::startCrawling);
                 return;
             }
             if (config.getCrawlingModes().contains("TUNNELS")) {
                 if (CrawlingUtil.isInFrontOfATunnel(player)) {
-                    Bukkit.getScheduler().runTask(plugin, () -> smPlayer.startCrawling());
+                    Bukkit.getScheduler().runTask(plugin, smPlayer::startCrawling);
                     SmartMoving.debug("ToggleSneak - Crawling - Start - TUNNELS");
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         SMPlayer smPlayer1 = smartMovingManager.getPlayer(player);
@@ -98,7 +98,6 @@ public class PlayerToggleSneak implements Listener {
                         }
                     }, time * 20));
                     SmartMoving.debug("ToggleSneak - Crawling - HOLD_X (Return)");
-                    return;
                 }
 
             }

@@ -1,5 +1,6 @@
 #if Empty, Plugin uses default prefix
+#MiniMessage format: https://webui.advntr.dev/
 prefix: ""
-reloadMsg: "&aCompleted reloading config"
-commandWrongUsage: "&cWrong Usage&7, &fUse /smartmoving reload"
-noPermission: "&cYou don't have permission"
+reloadMsg: "<green>Completed reloading config</green>"
+commandWrongUsage: "<red>Wrong Usage</red><gray>,</gray> <white>Use /smartmoving reload</white>"
+noPermission: "<red>You don't have permission</red>"

@@ -1,14 +1,17 @@
 name: SmartMoving
 version: '${version}'
 main: com.github.ipecter.smartmoving.SmartMoving
-api-version: 1.14
-softdepend: [ PlaceholderAPI, WorldGuard ]
-authors: [ IPECTER ]
 description: SmartMoving Plugin
+api-version: 1.14
+authors: [ IPECTER ]
 permissions:
-  smartmoving.walljump.use:
-    default: true
-  smartmoving.crawling.use:
-    default: true
+  smartmoving:
+    dash.use:
+      default: true
+    walljump.use:
+      default: true
+    crawling.use:
+      default: true
 commands:
   smartmoving:
+softdepend: [ PlaceholderAPI, WorldGuard ]

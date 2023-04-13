@@ -1,35 +1,41 @@
 package com.github.ipecter.smartmoving;
 
 import com.github.ipecter.rtu.pluginlib.RTUPluginLib;
+import com.github.ipecter.rtu.pluginlib.managers.TextManager;
 import com.github.ipecter.rtu.pluginlib.managers.VersionManager;
 import com.github.ipecter.smartmoving.commands.Command;
+import com.github.ipecter.smartmoving.dependencies.Placeholders;
 import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import com.github.ipecter.smartmoving.listeners.*;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
 import com.github.ipecter.smartmoving.nms.LegacyIndependentNmsPackets;
 import com.github.ipecter.smartmoving.nms.VersionIndependentNmsPackets;
-import com.iridium.iridiumcolorapi.IridiumColorAPI;
+import lombok.extern.java.Log;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Log
 public class SmartMoving extends JavaPlugin {
 
-    private String prefix = IridiumColorAPI.process("<GRADIENT:9ba832>[ SmartMoving ]</GRADIENT:a3a3a3> ");
-    private VersionManager versionManager = RTUPluginLib.getVersionManager();
+    public static final Component prefix = RTUPluginLib.getTextManager().colored("<gradient:#47cc1f:#a3a3a3>[ SmartMoving ]</gradient> ");
+    private final VersionManager versionManager = RTUPluginLib.getVersionManager();
+    private final TextManager textManager = RTUPluginLib.getTextManager();
 
     public static final void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
-            System.out.println(debugMessage);
+            log.info(debugMessage);
         }
     }
 
     @Override
     public void onDisable() {
         clearBlock();
-        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cDisable&f!"));
+        Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>Disable</red>!"))));
         SmartMovingManager manager = SmartMovingManager.getInstance();
         for (Player player : Bukkit.getOnlinePlayers()) {
             manager.removePlayer(player);
@@ -44,10 +50,17 @@ public class SmartMoving extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R1")) {
-            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&cThis plugin works only on 1.14 or higher versions."));
-            Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&c이 플러그인은 1.14 이상에서만 작동합니다"));
+        if (!(hasClass("com.destroystokyo.paper.PaperConfig") || hasClass("io.papermc.paper.configuration.Configuration"))) {
+            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on Paper or Paper fork.</red>"))));
+            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>이 플러그인은 Paper 또는 Paper 포크에서만 작동합니다</red>"))));
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R3")) {
+            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on 1.14 or higher versions.</red>"))));
+            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>이 플러그인은 1.14 이상에서만 작동합니다</red>"))));
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
         loadNMS();
         registerEvent();
@@ -57,7 +70,16 @@ public class SmartMoving extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             manager.addPlayer(player);
         }
-        Bukkit.getLogger().info(RTUPluginLib.getTextManager().formatted(prefix + "&aEnable&f!"));
+        Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<green>Enable</green>!"))));
+    }
+
+    private boolean hasClass(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     private void clearBlock() {
@@ -87,6 +109,7 @@ public class SmartMoving extends JavaPlugin {
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             RTUPluginLib.getDependencyManager().setUsePAPI(true);
+            new Placeholders(this);
         }
     }
 
@@ -103,11 +126,12 @@ public class SmartMoving extends JavaPlugin {
     }
 
     private void loadNMS() {
+        World world = Bukkit.getWorlds().get(0);
         //Checking which NmsPacketManager should be used.
         if (versionManager.isLegacy()) {
-            SmartMovingManager.getInstance().nmsPacketManager = new LegacyIndependentNmsPackets(Bukkit.getWorlds().get(0));
+            SmartMovingManager.getInstance().nmsPacketManager = new LegacyIndependentNmsPackets(world);
         } else {
-            SmartMovingManager.getInstance().nmsPacketManager = new VersionIndependentNmsPackets(Bukkit.getWorlds().get(0));
+            SmartMovingManager.getInstance().nmsPacketManager = new VersionIndependentNmsPackets(world);
         }
     }
 }
