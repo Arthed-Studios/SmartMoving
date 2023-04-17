@@ -6,6 +6,10 @@ import org.bukkit.block.Block;
 
 public class PaperUtils {
 
+    public static boolean isSolid(Block block) {
+        return block.isSolid();
+    }
+
     public static Sound getBlockSound(Block block, String sound) {
         SoundGroup soundGroup = block.getBlockSoundGroup();
         return switch (sound) {

@@ -7,15 +7,17 @@ import org.bukkit.block.Block;
 public class BlockUtils {
 
     public static boolean isSolid(Block block) {
+        if(SmartMoving.usesPaper())
+            return PaperUtils.isSolid(block);
+        //TODO: add better isSolid function
         return !block.isPassable();
     }
 
     public static Sound getBlockSound(Block block, String sound) {
         if(SmartMoving.usesPaper())
             return PaperUtils.getBlockSound(block, sound);
-        else
-            //TODO: Get sounds without paper
-            return Sound.BLOCK_STONE_STEP;
+        //TODO: get sounds without paper
+        return Sound.BLOCK_STONE_STEP;
     }
 
 }
