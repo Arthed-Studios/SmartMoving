@@ -61,7 +61,7 @@ public class ConfigManager {
     }
 
     public void initConfigFiles() {
-        initSetting(RTUPluginLib.getFileManager().copyResource("Setting.yml"));
+        initSetting(RTUPluginLib.getFileManager().copyResource("Settings.yml"));
         initMessage(RTUPluginLib.getFileManager().copyResource("Translations", "Locale_" + locale + ".yml"));
     }
 
