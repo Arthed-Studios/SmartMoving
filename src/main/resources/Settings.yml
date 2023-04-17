@@ -9,6 +9,9 @@ locale: "EN"
 #For Development | 개발 전용
 debug: false
 
+#How frequently, in ticks, should the plugin check the movement of players. Lower values means more responsive mechanics, but can also cause lag.
+movementTaskDelay: 3
+
 #Permission(Default=true): smartmoving.crawling.use
 #권한(기본값=true): smartmoving.crawling.use
 crawling:

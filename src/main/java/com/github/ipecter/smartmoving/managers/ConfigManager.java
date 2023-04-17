@@ -16,6 +16,7 @@ public class ConfigManager {
 
     private boolean enablePlugin = true;
     private boolean debug = false;
+    private long movementTaskDelay = 3;
     private String locale = "EN";
     private Map<String, String> msgKeyMap = Collections.synchronizedMap(new HashMap<>());
 
@@ -84,6 +85,7 @@ public class ConfigManager {
         enablePlugin = config.getBoolean("enablePlugin");
         locale = config.getString("locale");
         debug = config.getBoolean("debug");
+        movementTaskDelay = config.getLong("movementTaskDelay");
 
         initConfig(config);
 

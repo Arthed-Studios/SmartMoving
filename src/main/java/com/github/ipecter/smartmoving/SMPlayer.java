@@ -32,7 +32,7 @@ public class SMPlayer {
     private boolean crawling;
 
     //[ Crawling Part ]
-    //Every 1 Tick Task for Movement
+    //Movement tasks
     private BukkitTask moveTask;
     private Block barrierBlock;
     private BukkitTask canCrawlTask;
@@ -84,7 +84,7 @@ public class SMPlayer {
                     player.sendBlockChange(blockAbovePlayer.getLocation(), CrawlingUtil.BARRIER_BLOCK_DATA);
                 }
             }
-        }, 0, 1);
+        }, 0, config.getMovementTaskDelay());
 
         canCrawlTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
             if (!player.isOnGround()) {
@@ -104,7 +104,7 @@ public class SMPlayer {
             } else if (this.player.getVelocity().getY() > 0 && this.player.getNoDamageTicks() == 0) {
                 Bukkit.getScheduler().runTask(manager.getPlugin(), this::stopCrawling);
             }
-        }, 5, 1);
+        }, 5, config.getMovementTaskDelay());
 
         // Check if toggle mode should be used
         boolean hold = config.getCrawlingModes().contains("HOLD");
