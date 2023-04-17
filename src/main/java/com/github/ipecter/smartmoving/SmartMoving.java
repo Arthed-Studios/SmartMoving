@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 @Log
 public class SmartMoving extends JavaPlugin {
 
@@ -26,7 +28,7 @@ public class SmartMoving extends JavaPlugin {
     private final VersionManager versionManager = RTUPluginLib.getVersionManager();
     private final TextManager textManager = RTUPluginLib.getTextManager();
 
-    public static final void debug(String debugMessage) {
+    public static void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
             log.info(debugMessage);
         }
@@ -91,7 +93,7 @@ public class SmartMoving extends JavaPlugin {
     }
 
     private void setExecutor() {
-        getCommand("smartmoving").setExecutor(new Command());
+        Objects.requireNonNull(getCommand("smartmoving")).setExecutor(new Command());
     }
 
     private void registerEvent() {

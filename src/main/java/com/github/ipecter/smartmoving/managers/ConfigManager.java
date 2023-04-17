@@ -15,7 +15,6 @@ import java.util.*;
 public class ConfigManager {
 
     private boolean enablePlugin = true;
-    private boolean motd = true;
     private boolean debug = false;
     private String locale = "EN";
     private Map<String, String> msgKeyMap = Collections.synchronizedMap(new HashMap<>());
@@ -83,7 +82,6 @@ public class ConfigManager {
     private void initSetting(File file) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         enablePlugin = config.getBoolean("enablePlugin");
-        motd = config.getBoolean("motd");
         locale = config.getString("locale");
         debug = config.getBoolean("debug");
 
