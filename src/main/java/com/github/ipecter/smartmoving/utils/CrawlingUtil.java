@@ -98,7 +98,7 @@ public class CrawlingUtil {
 
     public static boolean checkAbove(Player player) {
         Block block = player.getLocation().add(0, 1.5, 0).getBlock();
-        if (player.getLocation().toBlockLocation().equals(player.getEyeLocation().toBlockLocation())) return true;
+        if (player.getLocation().getBlock().equals(player.getEyeLocation().getBlock())) return true;
         return checkAbove(block);
     }
 
@@ -109,15 +109,14 @@ public class CrawlingUtil {
 
     public static boolean checkAbove(Block block) {
         if (block.getType().isAir()) return true;
-        if (block.isSolid()) return false;
+        if (BlockUtils.isSolid(block)) return false;
         return !block.isLiquid();
     }
 
     public static boolean checkLeg(Block block) {
         if (block.getType().isAir()) return true;
-        if (block.isSolid()) return true;
+        if (BlockUtils.isSolid(block)) return true;
         if (block.isPassable()) return true;
-        if (block.isCollidable()) return false;
         return !block.isLiquid();
     }
 

@@ -7,6 +7,7 @@ import com.github.ipecter.smartmoving.events.CrawlingStopEvent;
 import com.github.ipecter.smartmoving.events.WallJumpStartEvent;
 import com.github.ipecter.smartmoving.events.WallJumpStopEvent;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
+import com.github.ipecter.smartmoving.utils.BlockUtils;
 import com.github.ipecter.smartmoving.utils.CrawlingUtil;
 import com.github.ipecter.smartmoving.utils.WallJumpUtil;
 import lombok.Getter;
@@ -84,6 +85,8 @@ public class SMPlayer {
                     player.sendBlockChange(blockAbovePlayer.getLocation(), CrawlingUtil.BARRIER_BLOCK_DATA);
                 }
             }
+            if(player.getVelocity().getY() > 0.1)
+                this.stopCrawling();
         }, 0, config.getMovementTaskDelay());
 
         canCrawlTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
@@ -180,7 +183,7 @@ public class SMPlayer {
             if (velocityY != 0) {
                 WallJumpUtil.spawnSlidingParticles(player, 2, lastFacing);
                 if (sliding) {
-                    if (player.isOnGround() || !WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing).isSolid()) {
+                    if (player.isOnGround() || !BlockUtils.isSolid(WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing))) {
                         Bukkit.getScheduler().runTask(manager.getPlugin(), () -> {
                             player.setFallDistance(0);
                             player.teleport(player.getLocation());

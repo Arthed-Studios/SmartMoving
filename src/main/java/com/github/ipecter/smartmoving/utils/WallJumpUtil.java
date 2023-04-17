@@ -9,7 +9,6 @@ import com.github.ipecter.smartmoving.managers.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -79,25 +78,7 @@ public class WallJumpUtil {
     }
 
     public static void playWallJumpSound(Player player, WallJumpWallFace facing) {
-        SoundGroup soundGroup = getBlockPlayerIsStuckOn(player, facing).getBlockSoundGroup();
-        Sound sound = soundGroup.getStepSound();
-        switch (config.getGroup().toLowerCase()) {
-            case "step":
-                sound = soundGroup.getStepSound();
-                break;
-            case "break":
-                sound = soundGroup.getBreakSound();
-                break;
-            case "place":
-                sound = soundGroup.getPlaceSound();
-                break;
-            case "hit":
-                sound = soundGroup.getHitSound();
-                break;
-            case "fall":
-                sound = soundGroup.getFallSound();
-                break;
-        }
+        Sound sound = BlockUtils.getBlockSound(getBlockPlayerIsStuckOn(player, facing), config.getGroup().toLowerCase());
         SmartMoving.debug("WallJump - Sound - " + config.getNamespace() + ":" + sound.getKey().getKey());
         player.getWorld().playSound(player.getLocation(),
                 config.getNamespace() + ":" + sound.getKey().getKey(),
@@ -122,7 +103,7 @@ public class WallJumpUtil {
     }
 
     public static boolean isOnGround(Player player) {
-        return player.getLocation().clone().subtract(0, 0.2, 0).getBlock().isSolid();
+        return BlockUtils.isSolid(player.getLocation().clone().subtract(0, 0.2, 0).getBlock());
     }
 
     public static Block getBlockPlayerIsStuckOn(Player player, WallJumpWallFace facing) {

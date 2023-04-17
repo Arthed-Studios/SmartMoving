@@ -8,7 +8,6 @@ import com.github.ipecter.smartmoving.dependencies.Placeholders;
 import com.github.ipecter.smartmoving.dependencies.WorldGuard;
 import com.github.ipecter.smartmoving.listeners.*;
 import com.github.ipecter.smartmoving.managers.ConfigManager;
-import com.github.ipecter.smartmoving.nms.LegacyIndependentNmsPackets;
 import com.github.ipecter.smartmoving.nms.VersionIndependentNmsPackets;
 import lombok.extern.java.Log;
 import net.kyori.adventure.text.Component;
@@ -27,6 +26,11 @@ public class SmartMoving extends JavaPlugin {
     public static final Component prefix = RTUPluginLib.getTextManager().colored("<gradient:#47cc1f:#a3a3a3>[ SmartMoving ]</gradient> ");
     private final VersionManager versionManager = RTUPluginLib.getVersionManager();
     private final TextManager textManager = RTUPluginLib.getTextManager();
+
+    private static boolean usePaper;
+    public static boolean usesPaper() {
+        return usePaper;
+    }
 
     public static void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
@@ -52,11 +56,10 @@ public class SmartMoving extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!(hasClass("com.destroystokyo.paper.PaperConfig") || hasClass("io.papermc.paper.configuration.Configuration"))) {
-            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on Paper or Paper fork.</red>"))));
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        if (!(hasClass("com.destroystokyo.paper.PaperConfig") || hasClass("io.papermc.paper.configuration.Configuration")))
+            usePaper = false;
+        else
+            usePaper = true;
         if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R3")) {
             Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on 1.14 or higher versions.</red>"))));
             Bukkit.getPluginManager().disablePlugin(this);
@@ -97,7 +100,6 @@ public class SmartMoving extends JavaPlugin {
     private void registerEvent() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerJump(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerToggleSneak(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerToggleSwim(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
