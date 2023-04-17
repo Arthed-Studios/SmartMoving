@@ -54,13 +54,11 @@ public class SmartMoving extends JavaPlugin {
     public void onEnable() {
         if (!(hasClass("com.destroystokyo.paper.PaperConfig") || hasClass("io.papermc.paper.configuration.Configuration"))) {
             Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on Paper or Paper fork.</red>"))));
-            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>이 플러그인은 Paper 또는 Paper 포크에서만 작동합니다</red>"))));
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
         if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R3")) {
             Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on 1.14 or higher versions.</red>"))));
-            Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>이 플러그인은 1.14 이상에서만 작동합니다</red>"))));
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
