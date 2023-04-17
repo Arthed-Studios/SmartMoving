@@ -1,5 +1,4 @@
-#Control whether to enable this plugin's functions
-#이 플러그인의 기능을 활성화할 것인지 조정합니다
+#Control whether to enable this plugin's functions | 이 플러그인의 기능을 활성화할 것인지 조정합니다
 enablePlugin: true
 
 #Message Locale
@@ -7,8 +6,7 @@ enablePlugin: true
 #메세지 언어, 새로운 언어 파일을 만들 수 있습니다, Locale_KR.yml = KR
 locale: "EN"
 
-#For Development
-#개발 전용
+#For Development | 개발 전용
 debug: false
 
 #Permission(Default=true): smartmoving.crawling.use
