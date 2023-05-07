@@ -50,7 +50,7 @@ public class PlayerToggleSneak implements Listener {
                 SmartMoving.debug("ToggleSneak - Crawling - Stop - Sneak - TOGGLE (Return)");
                 return;
             }
-            if (!smPlayer.isCrawling() && player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
+            if (player.isSwimming() && config.getCrawlingModes().contains("HOLD") && !player.getLocation().getBlock().isLiquid()) {
                 Bukkit.getScheduler().runTask(plugin, smPlayer::startCrawling);
                 return;
             }

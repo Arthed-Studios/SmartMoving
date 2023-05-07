@@ -26,7 +26,7 @@ public class SmartMoving extends JavaPlugin {
     private final VersionManager versionManager = RTUPluginLib.getVersionManager();
     private final TextManager textManager = RTUPluginLib.getTextManager();
 
-    public static final void debug(String debugMessage) {
+    public static void debug(String debugMessage) {
         if (ConfigManager.getInstance().isDebug()) {
             log.info(debugMessage);
         }

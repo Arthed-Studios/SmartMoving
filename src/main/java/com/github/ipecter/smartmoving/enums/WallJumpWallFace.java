@@ -24,15 +24,12 @@ public enum WallJumpWallFace {
     }
 
     public static WallJumpWallFace fromBlockFace(BlockFace blockFace) {
-        switch (blockFace) {
-            case NORTH:
-                return NORTH;
-            case SOUTH:
-                return SOUTH;
-            case WEST:
-                return WEST;
-            default: //EAST
-                return EAST;
-        }
+        return switch (blockFace) {
+            case NORTH -> NORTH;
+            case SOUTH -> SOUTH;
+            case WEST -> WEST;
+            default -> //EAST
+                    EAST;
+        };
     }
 }

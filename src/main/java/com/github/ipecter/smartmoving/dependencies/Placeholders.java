@@ -7,6 +7,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class Placeholders extends PlaceholderExpansion {
 
@@ -26,15 +27,15 @@ public class Placeholders extends PlaceholderExpansion {
         return true;
     }
 
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "IPECTER";
     }
 
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "smartmoving";
     }
 
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return plugin.getPluginMeta().getVersion();
     }
 

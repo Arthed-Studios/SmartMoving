@@ -69,9 +69,7 @@ public class SMPlayer {
         barrierBlock = player.getLocation().getBlock();
         player.setSwimming(true);
         holdCheck = false;
-        holdCheckTask = Bukkit.getScheduler().runTaskLater(manager.getPlugin(), () -> {
-            holdCheck = true;
-        }, 10);
+        holdCheckTask = Bukkit.getScheduler().runTaskLater(manager.getPlugin(), () -> holdCheck = true, 10);
         moveTask = Bukkit.getScheduler().runTaskTimer(manager.getPlugin(), () -> {
             player.setSwimming(true);
             Block blockAbovePlayer = this.player.getLocation().add(0, 1.5, 0).getBlock();
