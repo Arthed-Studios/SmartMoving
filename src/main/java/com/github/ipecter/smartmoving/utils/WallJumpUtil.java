@@ -11,6 +11,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -122,9 +123,10 @@ public class WallJumpUtil {
     }
 
     public static boolean isOnGround(Player player) {
-        return player.getLocation().clone().subtract(0, 0.2, 0).getBlock().isSolid();
+        Block block = player.getLocation().clone().subtract(0, 0.2, 0).getBlock();
+        if (block.getBlockData() instanceof Openable openable) return !openable.isOpen();
+        return player.isOnGround() || block.isSolid();
     }
-
     public static Block getBlockPlayerIsStuckOn(Player player, WallJumpWallFace facing) {
         return player.getLocation().clone().add(facing.xOffset, facing.yOffset, facing.zOffset).getBlock();
     }

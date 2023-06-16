@@ -48,6 +48,7 @@ public class SMPlayer {
     private int remainingJumps = -1;
     private WallJumpWallFace lastFacing;
     private Location lastJumpLocation;
+    private boolean hasGravity;
 
     private float velocityY;
     private BukkitTask velocityTask;
@@ -155,16 +156,14 @@ public class SMPlayer {
 
 
     public void startWallJump() {
-        if (!WallJumpUtil.canWallJump(player))
-            return;
+        if (!WallJumpUtil.canWallJump(player)) return;
         WallJumpStartEvent wallJumpEvent = new WallJumpStartEvent(this);
         Bukkit.getPluginManager().callEvent(wallJumpEvent);
         if (wallJumpEvent.isCancelled()) return;
         wallJumping = true;
         lastFacing = WallJumpUtil.getPlayerFacing(player);
         lastJumpLocation = player.getLocation();
-        if (remainingJumps > 0)
-            remainingJumps--;
+        if (remainingJumps > 0) remainingJumps--;
 
         //play sound and spawn particles
         WallJumpUtil.playWallJumpSound(player, lastFacing);
@@ -173,29 +172,28 @@ public class SMPlayer {
         //stop the player from falling and moving while on the wall
         //or make them slide down
         velocityY = 0;
+        if (stopWallJumpingTask != null) stopWallJumpingTask.cancel();
         velocityTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
+            if (velocityY == 0) player.setGravity(false);
             player.setVelocity(new Vector(0, velocityY, 0));
-            if (velocityY != 0) {
-                WallJumpUtil.spawnSlidingParticles(player, 2, lastFacing);
-                if (sliding) {
-                    if (player.isOnGround() || !WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing).isSolid()) {
-                        Bukkit.getScheduler().runTask(manager.getPlugin(), () -> {
-                            player.setFallDistance(0);
-                            player.teleport(player.getLocation());
-                            stopWallJump(false);
-                        });
-                    }
-                    if (lastJumpLocation.getY() - player.getLocation().getY() >= 1.2) {
-                        lastJumpLocation = player.getLocation();
-                        WallJumpUtil.playWallJumpSound(player, lastFacing);
-                    }
+            WallJumpUtil.spawnSlidingParticles(player, 2, lastFacing);
+            if (!WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing).isSolid() || WallJumpUtil.isOnGround(player)) {
+                Bukkit.getScheduler().runTask(manager.getPlugin(), () -> {
+                    player.setFallDistance(0);
+                    player.teleport(player.getLocation());
+                    stopWallJump(false);
+                });
+            }
+            if (velocityY != 0 && sliding) {
+                if (lastJumpLocation.getY() - player.getLocation().getY() >= 1.2) {
+                    lastJumpLocation = player.getLocation();
+                    WallJumpUtil.playWallJumpSound(player, lastFacing);
                 }
             }
         }, 0, 1);
 
         //make the player fall | slide when the time runs out
-        if (fallTask != null)
-            fallTask.cancel();
+        if (fallTask != null) fallTask.cancel();
         fallTask = Bukkit.getScheduler().runTaskLaterAsynchronously(manager.getPlugin(), () -> {
             if (wallJumping) {
                 if (config.isSlideEnable()) {
@@ -208,8 +206,7 @@ public class SMPlayer {
         }, (long) (config.getTimeOnWall() * 20));
 
         //cancel the task for resetting wall jumping if the player wall jumps
-        if (stopWallJumpingTask != null)
-            stopWallJumpingTask.cancel();
+        if (stopWallJumpingTask != null) stopWallJumpingTask.cancel();
     }
 
     public void stopWallJump() {
@@ -228,12 +225,9 @@ public class SMPlayer {
 
         //if the player is not sliding or can jump while sliding and is not looking down
         if (jump &&// !event.isCancelled() &&
-                ((velocityY == 0 && player.getLocation().getPitch() < 85) ||
-                        (config.isSlideCanJumpWhile() && player.getLocation().getPitch() < 60))) {
+                ((velocityY == 0 && player.getLocation().getPitch() < 85) || (config.isSlideCanJumpWhile() && player.getLocation().getPitch() < 60))) {
             //push the player in the direction that they are looking
-            WallJumpUtil.pushPlayerInFront(player,
-                    config.getJumpPowerHorizontal(),
-                    config.getJumpPowerVertical());
+            WallJumpUtil.pushPlayerInFront(player, config.getJumpPowerHorizontal(), config.getJumpPowerVertical());
         }
         //after 1.5 seconds, if the player hasn't wall jumped again, reset everything
         Bukkit.getScheduler().runTaskLaterAsynchronously(manager.getPlugin(), () -> {
@@ -250,10 +244,8 @@ public class SMPlayer {
         lastFacing = null;
         lastJumpLocation = null;
         remainingJumps = config.getMaxJump();
-        if (remainingJumps == 0)
-            remainingJumps = -1;
-        if (stopWallJumpingTask != null)
-            stopWallJumpingTask.cancel();
+        if (remainingJumps == 0) remainingJumps = -1;
+        if (stopWallJumpingTask != null) stopWallJumpingTask.cancel();
         stopWallJumpingTask = null;
     }
 }
