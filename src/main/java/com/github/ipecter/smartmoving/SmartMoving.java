@@ -56,7 +56,7 @@ public class SmartMoving extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if (!versionManager.isSupportVersion("v1_14_R1", "v1_19_R3")) {
+        if (!versionManager.isSupportVersion("v1_14_R1", "v1_20_R1")) {
             Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>This plugin works only on 1.14 or higher versions.</red>"))));
             Bukkit.getLogger().info(textManager.toString(prefix.append(textManager.colored("<red>이 플러그인은 1.14 이상에서만 작동합니다</red>"))));
             Bukkit.getPluginManager().disablePlugin(this);
