@@ -48,7 +48,6 @@ public class SMPlayer {
     private int remainingJumps = -1;
     private WallJumpWallFace lastFacing;
     private Location lastJumpLocation;
-    private boolean hasGravity;
 
     private float velocityY;
     private BukkitTask velocityTask;
@@ -174,7 +173,6 @@ public class SMPlayer {
         velocityY = 0;
         if (stopWallJumpingTask != null) stopWallJumpingTask.cancel();
         velocityTask = Bukkit.getScheduler().runTaskTimerAsynchronously(manager.getPlugin(), () -> {
-            if (velocityY == 0) player.setGravity(false);
             player.setVelocity(new Vector(0, velocityY, 0));
             WallJumpUtil.spawnSlidingParticles(player, 2, lastFacing);
             if (!WallJumpUtil.getBlockPlayerIsStuckOn(player, lastFacing).isSolid() || WallJumpUtil.isOnGround(player)) {
